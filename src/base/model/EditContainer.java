@@ -25,13 +25,24 @@ public class EditContainer {
     }
 
     public void create(String text, int position, boolean isAddition) {
-        Edit edit = new Edit(text, isAddition, position);
         Edit existingEdit = this.first;
         Edit previousEdit = null;
 
-        if (existingEdit == null && position != 0) {
+        if (existingEdit == null && position != 0 && position != -1) {
             System.out.println("WARNING: no existing edits and the first position is not 0");
         }
+        // use -1 to insert at the edit
+        if (position == -1) {
+            int totalSize = 0;
+            while (existingEdit != null) {
+                totalSize += existingEdit.getText().length();
+                existingEdit = existingEdit.getNext();
+            }
+            position = totalSize;
+            existingEdit = this.first;
+        }
+        // Create the edit object
+        Edit edit = new Edit(text, isAddition, position);
 
         int currentPosition;
         int nextPosition = 0;
@@ -45,34 +56,46 @@ public class EditContainer {
                 if (position == currentPosition || position < nextPosition) {
                     editMade = true;
                     if (isAddition) {
+                        /*
+                            USER HAS ADDED TEXT
+                         */
                         if (previousEdit != null) {
+                            // ADDING AT SOME POSITION IN THE LIST
                             if (currentPosition == position) {
-                                // just add in the middle
+                                // IT CAN SIMPLY BE INSERTED BETWEEN TWP EXISTING EDITS
                                 edit.insert(previousEdit, existingEdit);
                             } else {
-                                // have to split the existingEdit
+                                // IT IS IN THE MIDDLE OF AN EXISTING EDIT
                                 Edit nextEdit = existingEdit.split(position);
                                 edit.insert(existingEdit, nextEdit);
                             }
                         } else {
+                            // ADDING AT THE FRONT
                             if (position == 0) {
                                 // just add it in front
                                 edit.insertInFront(existingEdit);
                                 this.first = edit;
                             }
                             else {
+                                // ADDING INTO THE FIRST NODE
                                 // split the first node and add it
                                 Edit nextEdit = existingEdit.split(position);
                                 edit.insert(existingEdit, nextEdit);
                             }
                         }
                     } else {
+                        /*
+                            USER HAS REMOVED TEXT
+                         */
                         // find all edits that were affected, merge them into this one
+                        // ie user might have deleted text spanning across multiple nodes
                         Edit nextEdit = existingEdit;
                         if (position != currentPosition) {
+                            // edit starts in the middle of an edit
                             nextEdit = existingEdit.split(position - existingEdit.getPosition());
                             previousEdit = existingEdit;
                         }
+                        // look into the nextEdit, and all subsequent edits, until the end of the text is found
                         nextEdit = nextEdit.merge(text);
                         if (previousEdit == null)
                             edit.insertInFront(nextEdit);
@@ -106,7 +129,9 @@ public class EditContainer {
 
     public void sync() {
         // guarantee the right positions
-        this.first.updatePosition();
+        if (this.first != null) {
+            this.first.updatePosition();
+        }
         HashMap<Integer, Integer> existingKeys = new HashMap<>();
         Edit current = this.first;
         this.size = 0;
@@ -193,5 +218,31 @@ public class EditContainer {
 
     public Edit mostRecentEdit() {
         return this.mostRecent.peek();
+    }
+
+    public void undo() {
+        if (!this.mostRecent.empty()) {
+            Edit edit = this.mostRecent.pop();
+            if (edit.getId() == this.first.getId()) {
+                this.first = this.first.getNext();
+            }
+            edit.undo();
+            this.sync();
+        }
+    }
+
+    public void undoById(int editId) {
+        Edit edit = this.first;
+        while (edit != null) {
+            if (edit.getId() == editId) {
+                if (edit.getId() == this.first.getId()) {
+                    this.first = this.first.getNext();
+                }
+                edit.undo();
+                break;
+            }
+            edit = edit.getNext();
+        }
+        this.sync();
     }
 }

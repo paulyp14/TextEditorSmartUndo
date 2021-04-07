@@ -45,15 +45,25 @@ public class InteractiveModelTestDriver {
             } else {
                 currentPrompt = regularPrompt;
                 makeChoice();
-                if (choice != 3) {
+                if (choice == 1 || choice == 2) {
                     getInputPosition();
                 }
             }
-            if (choice != 3) {
-                readInputText();
-            }
-            else {
-                getIdToDelete();
+            switch(choice) {
+                case 1:
+                case 2:
+                    readInputText();
+                    break;
+                case 3:
+                    getIdToDelete();
+                    break;
+                case 4:
+                    editContainer.undo();
+                    break;
+                case 5:
+                default:
+                    getIdToUndo();
+                    break;
             }
             System.out.println(editContainer.stringRepr());
         }
@@ -61,7 +71,7 @@ public class InteractiveModelTestDriver {
 
     public static void getInputPosition() {
         while (true) {
-            System.out.println("Enter the position of the edit:");
+            System.out.println("Enter the position of the edit (use -1 to insert at the end):");
             String choice = scanner.nextLine();
             try {
                 position = Integer.parseInt(choice);
@@ -81,10 +91,12 @@ public class InteractiveModelTestDriver {
             System.out.println("  1. Add text");
             System.out.println("  2. Remove text");
             System.out.println("  3. Make an edit no longer visible");
+            System.out.println("  4. Undo the most recent edit");
+            System.out.println("  5. Undo an edit by ID");
             String choice = scanner.nextLine();
             try {
                 int chosen = Integer.parseInt(choice);
-                if (chosen > 0 && chosen < 4) {
+                if (chosen > 0 && chosen < 6) {
                     InteractiveModelTestDriver.choice = chosen;
                     break;
                 }
@@ -102,6 +114,23 @@ public class InteractiveModelTestDriver {
             try {
                 int chosen = Integer.parseInt(choice);
                 editContainer.delete(chosen);
+                break;
+            } catch (NumberFormatException e) {
+                breakCheck(choice);
+            } catch (Exception e) {
+                // pass
+            }
+            System.out.println("Invalid choice, try again...");
+        }
+    }
+
+    public static void getIdToUndo() {
+        while (true) {
+            System.out.println("Enter the ID of the edit to undo it");
+            String choice = scanner.nextLine();
+            try {
+                int chosen = Integer.parseInt(choice);
+                editContainer.undoById(chosen);
                 break;
             } catch (NumberFormatException e) {
                 breakCheck(choice);

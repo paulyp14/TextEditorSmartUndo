@@ -229,6 +229,7 @@ public class Edit {
 
     public void mergeDeleted() {
         boolean keepLooking = false;
+        boolean mergedWithFirst = false;
         Edit first = null;
         Edit edit = this;
         // go through the list
@@ -251,6 +252,9 @@ public class Edit {
                 first = null;
             }
             if (mergeWithFirst) {
+                if (!mergedWithFirst) {
+                    mergedWithFirst = true;
+                }
                 first.text += edit.asText();
                 first.next = edit.next;
                 if (edit.hasNext()) {
@@ -258,6 +262,9 @@ public class Edit {
                 }
             }
             edit = edit.getNext();
+        }
+        if (mergedWithFirst) {
+            first.id = Edit.getNextGeneratedId();
         }
     }
 
@@ -280,5 +287,30 @@ public class Edit {
 
     protected boolean isEditAnAddition() {
         return this.isAddition;
+    }
+
+    public void undo() {
+        if (this.isAddition) {
+            // remove itself from the list
+            if (this.hasPrevious()) {
+                this.previous.next = this.next;
+            }
+            if (this.hasNext()) {
+                this.next.previous = this.previous;
+            }
+
+            if (this.hasPrevious()) {
+                this.previous = null;
+            }
+
+            if (this.hasNext()) {
+                this.next = null;
+            }
+
+        }
+        else {
+            // become an addition of text
+            this.isAddition = true;
+        }
     }
 }
