@@ -1,9 +1,6 @@
 package base.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Stack;
+import java.util.*;
 
 public class EditContainer {
 
@@ -232,6 +229,11 @@ public class EditContainer {
     }
 
     public void undoById(int editId) {
+        this.undoByIdWithoutSync(editId);
+        this.sync();
+    }
+
+    private void undoByIdWithoutSync(int editId) {
         Edit edit = this.first;
         while (edit != null) {
             if (edit.getId() == editId) {
@@ -242,6 +244,12 @@ public class EditContainer {
                 break;
             }
             edit = edit.getNext();
+        }
+    }
+
+    public void undoByIds(List<Integer> editIds) {
+        for (int editId: editIds) {
+            this.undoByIdWithoutSync(editId);
         }
         this.sync();
     }
