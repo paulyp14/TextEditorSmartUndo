@@ -273,4 +273,12 @@ public class Edit {
         };
         return String.join("\n", arr);
     }
+
+    protected String getText() {
+        return this.text;
+    }
+
+    protected boolean isEditAnAddition() {
+        return this.isAddition;
+    }
 }

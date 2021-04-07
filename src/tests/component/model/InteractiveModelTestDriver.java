@@ -31,7 +31,7 @@ public class InteractiveModelTestDriver {
         System.out.println("This system will simulate making edits, and will show how\ninteractions are reflected in the model");
         System.out.println("Instructions:");
         System.out.println(" -- To quit at any time, enter the sequence '%%'");
-        System.out.println(" -- To finish typing input to see how it is reflected\n");
+        System.out.println(" -- To finish typing input to see how it is reflected");
         System.out.println("    in the model, enter the sequence '##'");
         System.out.println("\n");
         System.out.println(separator + "\n\n");

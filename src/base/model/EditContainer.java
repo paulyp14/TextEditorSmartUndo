@@ -20,6 +20,10 @@ public class EditContainer {
         this.mostRecent = new Stack<>();
     }
 
+    public int size() {
+        return this.size;
+    }
+
     public void create(String text, int position, boolean isAddition) {
         Edit edit = new Edit(text, isAddition, position);
         Edit existingEdit = this.first;
@@ -175,5 +179,19 @@ public class EditContainer {
                 separator
         };
         return String.join("\n", components);
+    }
+
+    public ArrayList<EditView> view() {
+        ArrayList<EditView> views = new ArrayList<>();
+        Edit edit = this.first;
+        while (edit != null) {
+            views.add(EditView.createFromEdit(edit));
+            edit = edit.getNext();
+        }
+        return views;
+    }
+
+    public Edit mostRecentEdit() {
+        return this.mostRecent.peek();
     }
 }
