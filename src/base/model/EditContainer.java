@@ -94,8 +94,13 @@ public class EditContainer {
                         }
                         // look into the nextEdit, and all subsequent edits, until the end of the text is found
                         nextEdit = nextEdit.merge(text);
-                        if (previousEdit == null)
+                        if (previousEdit == null) {
                             edit.insertInFront(nextEdit);
+                            this.first = edit;
+                        }
+                        else if (nextEdit == null) {
+                            edit.insertBehind(previousEdit);
+                        }
                         else {
                             edit.insert(previousEdit, nextEdit);
                         }
@@ -213,6 +218,18 @@ public class EditContainer {
         return views;
     }
 
+    public ArrayList<EditView> view(List<Integer> editIds) {
+        ArrayList<EditView> views = new ArrayList<>();
+        Edit edit = this.first;
+        while (edit != null) {
+            if (editIds.contains(edit.getId())) {
+                views.add(EditView.createFromEdit(edit));
+            }
+            edit = edit.getNext();
+        }
+        return views;
+    }
+
     public Edit mostRecentEdit() {
         return this.mostRecent.peek();
     }
@@ -237,7 +254,7 @@ public class EditContainer {
         Edit edit = this.first;
         while (edit != null) {
             if (edit.getId() == editId) {
-                if (edit.getId() == this.first.getId()) {
+                if (edit.getId() == this.first.getId() && edit.isEditAnAddition()) {
                     this.first = this.first.getNext();
                 }
                 edit.undo();

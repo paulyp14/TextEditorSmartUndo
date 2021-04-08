@@ -6,13 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import base.model.EditContainer;
 import base.model.EditView;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 
 import java.util.ArrayList;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ModelEditContainerTest {
 
     private EditContainer container;
@@ -23,6 +22,7 @@ public class ModelEditContainerTest {
     }
 
     @Test
+    @Order(1)
     @DisplayName("First test")
     public void testOne() {
         // TEST ONE AS DESCRIBED IN A3
@@ -44,6 +44,7 @@ public class ModelEditContainerTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("Second test")
     public void testTwo() {
         // TEST TWO AS DESCRIBED IN A3
@@ -72,6 +73,7 @@ public class ModelEditContainerTest {
     }
 
     @Test
+    @Order(3)
     @DisplayName("Third test")
     public void testThree() {
         // TEST TWO AS DESCRIBED IN A3
@@ -101,6 +103,7 @@ public class ModelEditContainerTest {
     }
 
     @Test
+    @Order(4)
     @DisplayName("Fourth test")
     public void testFour() {
         String[] arr = {
@@ -126,5 +129,57 @@ public class ModelEditContainerTest {
         }
 
         assertEquals(true, equal, "View of edits returned by container should represent the text of the array");
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Fifth test")
+    public void testFive() {
+        String[] arr = {
+                "The oceans are ", "going to be devoid of fish ", "by 2050", " and the earth is already 1.2C ",
+                "warmer than preindustrial times", " while wealth inequality is increasing ", "and the housing",
+                " crisis spirals out of control", " but I'm writing unit tests like everything is normal", " even though we're living in the twilight of human civilization"
+        };
+
+        String fullText = "The oceans are going to be devoid of fish by 2050 and the earth is already 1.2C warmer than preindustrial times while wealth inequality is increasing and the housing crisis spirals out of control but I'm writing unit tests like everything is normal even though we're living in the twilight of human civilization";
+
+        int counter = 0;
+        for (String s : arr) {
+            this.container.create(s, counter, true);
+            counter += s.length();
+        }
+        ArrayList<Integer> editIds = new ArrayList<>();
+        editIds.add(45);
+        editIds.add(49);
+        ArrayList<EditView> asViews = this.container.view(editIds);
+
+        assertEquals("going to be devoid of fish ", asViews.get(0).getText());
+        assertEquals(" while wealth inequality is increasing ", asViews.get(1).getText());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Sixth test")
+    public void testSix() {
+        String[] arr = {
+                "The oceans are ", "going to be devoid of fish ", "by 2050", " and the earth is already 1.2C ",
+                "warmer than preindustrial times", " while wealth inequality is increasing ", "and the housing",
+                " crisis spirals out of control", " but I'm writing unit tests like everything is normal", " even though we're living in the twilight of human civilization"
+        };
+
+        String fullText = "The oceans are going to be devoid of fish by 2050 and the earth is already 1.2C warmer than preindustrial times while wealth inequality is increasing and the housing crisis spirals out of control but I'm writing unit tests like everything is normal even though we're living in the twilight of human civilization";
+
+        int counter = 0;
+        for (String s : arr) {
+            this.container.create(s, counter, true);
+            counter += s.length();
+        }
+
+        for (String s: arr) {
+            container.undo();
+        }
+
+        assertEquals(0, container.size(), "Container should be empty after same number of undos called as edits made");
+        assertEquals("", container.asText(), "Container should be empty after same number of undos called as edits made");
     }
 }
