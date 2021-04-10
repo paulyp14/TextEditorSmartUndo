@@ -15,9 +15,8 @@ public class InteractiveModelTestDriver {
     private static String currentPrompt;
     private static int choice = 1;
     private static int position = 0;
-    private static EditContainer editContainer = new EditContainer();
-    private static GroupContainer groupContainer = new GroupContainer(editContainer);
-
+    private static EditContainer editContainer = EditContainer.getContainer();
+    private static GroupContainer groupContainer = GroupContainer.getContainer();
 
     private static final String breaker = "%%";
     private static final String endOfInput = "##";

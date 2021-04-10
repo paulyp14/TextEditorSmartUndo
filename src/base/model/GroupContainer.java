@@ -10,12 +10,21 @@ public class GroupContainer {
 	private HashMap<String, EditGroup> groups;
 	private EditGroup defaultGroup;
 	private EditContainer editContainer;
+
+	private static GroupContainer containerSingleton = null;
 	
-	public GroupContainer(EditContainer container) {
+	private GroupContainer(EditContainer container) {
 		//initializing the constructor
 		this.groups = new HashMap<>();
 		this.defaultGroup = new EditGroup("DEFAULT");
 		this.editContainer = container;
+	}
+
+	public static GroupContainer getContainer() {
+		if (null == containerSingleton) {
+			containerSingleton = new GroupContainer(EditContainer.getContainer());
+		}
+		return containerSingleton;
 	}
 	
 	public void create(String groupName) {
@@ -171,5 +180,9 @@ public class GroupContainer {
 		}
 		finalRepr.add(separator.toString());
 		return String.join("\n", finalRepr);
+	}
+
+	public ArrayList<EditView> viewEditsInDefaultGroup() {
+		return this.defaultGroup.getEdits();
 	}
 }

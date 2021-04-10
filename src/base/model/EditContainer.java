@@ -12,11 +12,20 @@ public class EditContainer {
 
     private Stack<Edit> mostRecent;
 
-    public EditContainer() {
+    private static EditContainer containerSingleton = null;
+
+    private EditContainer() {
         this.first = null;
         this.last = null;
         this.size = 0;
         this.mostRecent = new Stack<>();
+    }
+
+    public static EditContainer getContainer() {
+        if (containerSingleton == null) {
+            containerSingleton = new EditContainer();
+        }
+        return containerSingleton;
     }
 
     public boolean isUpdated() {

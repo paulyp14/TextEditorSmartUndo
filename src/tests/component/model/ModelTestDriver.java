@@ -10,7 +10,7 @@ public class ModelTestDriver {
     }
 
     public static void testSeven() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {
                 "The Toronto Maple Leafs are the best NHL team",
                 " and it's not even close!",
@@ -40,7 +40,7 @@ public class ModelTestDriver {
     }
 
     public static void testSix() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go", " have the best goal scorer and"};
         container.create(asArr[0], 0, true);
         container.create(asArr[2], 45, true);
@@ -57,7 +57,7 @@ public class ModelTestDriver {
     }
 
     public static void testFive() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go", " have the best goal scorer and"};
         container.create(asArr[0], 0, true);
         container.create(asArr[2], 45, true);
@@ -72,7 +72,7 @@ public class ModelTestDriver {
     }
 
     public static void testFour() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go", " have the best goal scorer and"};
         container.create(asArr[0], 0, true);
         container.create(asArr[2], 45, true);
@@ -85,7 +85,7 @@ public class ModelTestDriver {
     }
 
     public static void testThree() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go", " have the best goal scorer and"};
         container.create(asArr[0], 0, true);
         container.create(asArr[2], 45, true);
@@ -96,7 +96,7 @@ public class ModelTestDriver {
     }
 
     public static void testTwo() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go"};
         container.create(asArr[0], 0, true);
         container.create(asArr[2], 45, true);
@@ -106,7 +106,7 @@ public class ModelTestDriver {
     }
 
     public static void testOne() {
-        EditContainer container = new EditContainer();
+        EditContainer container = EditContainer.getContainer();
 
         String myString = "The Toronto Maple Leafs are the best NHL team and it's not even close! Go Leafs Go";
         String[] asArr = {"The Toronto Maple Leafs are the best NHL team", " and it's not even close!", " Go Leafs Go"};

@@ -18,7 +18,7 @@ public class ModelEditContainerTest {
 
     @BeforeEach
     public void setUp() {
-        this.container = new EditContainer();
+        this.container = EditContainer.getContainer();
     }
 
     @Test
