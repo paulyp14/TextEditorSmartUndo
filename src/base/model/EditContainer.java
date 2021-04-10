@@ -8,6 +8,8 @@ public class EditContainer {
     private Edit last;
     private int size;
 
+    private boolean updated;
+
     private Stack<Edit> mostRecent;
 
     public EditContainer() {
@@ -17,11 +19,21 @@ public class EditContainer {
         this.mostRecent = new Stack<>();
     }
 
+    public boolean isUpdated() {
+        return this.updated;
+    }
+
+    public void markSeen() {
+        this.updated = false;
+    }
+
     public int size() {
         return this.size;
     }
 
     public void create(String text, int position, boolean isAddition) {
+        this.updated = true;
+
         Edit existingEdit = this.first;
         Edit previousEdit = null;
 
@@ -168,6 +180,8 @@ public class EditContainer {
     }
 
     public void delete(int editId) {
+        this.updated = true;
+
         Edit edit = this.first;
         boolean deleted = false;
         while (edit != null) {
@@ -205,6 +219,7 @@ public class EditContainer {
                 editString,
                 separator
         };
+        // TODO SOME FORMATTING
         return String.join("\n", components);
     }
 
@@ -212,7 +227,9 @@ public class EditContainer {
         ArrayList<EditView> views = new ArrayList<>();
         Edit edit = this.first;
         while (edit != null) {
-            views.add(EditView.createFromEdit(edit));
+            if (!edit.isDeleted()) {
+                views.add(EditView.createFromEdit(edit));
+            }
             edit = edit.getNext();
         }
         return views;
@@ -235,6 +252,7 @@ public class EditContainer {
     }
 
     public void undo() {
+        this.updated = true;
         if (!this.mostRecent.empty()) {
             Edit edit = this.mostRecent.pop();
             if (edit.getId() == this.first.getId()) {
@@ -251,6 +269,7 @@ public class EditContainer {
     }
 
     private void undoByIdWithoutSync(int editId) {
+        this.updated = true;
         Edit edit = this.first;
         while (edit != null) {
             if (edit.getId() == editId) {

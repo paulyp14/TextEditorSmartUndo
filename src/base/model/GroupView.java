@@ -1,3 +1,5 @@
+package base.model;
+
 
 public class GroupView {
 	String groupName;

@@ -2,6 +2,7 @@ package tests.component.model;
 
 import base.model.Edit;
 import base.model.EditContainer;
+import base.model.GroupContainer;
 
 import java.util.Scanner;
 
@@ -15,6 +16,7 @@ public class InteractiveModelTestDriver {
     private static int choice = 1;
     private static int position = 0;
     private static EditContainer editContainer = new EditContainer();
+    private static GroupContainer groupContainer = new GroupContainer(editContainer);
 
 
     private static final String breaker = "%%";
@@ -61,11 +63,23 @@ public class InteractiveModelTestDriver {
                     editContainer.undo();
                     break;
                 case 5:
-                default:
                     getIdToUndo();
                     break;
+                case 6:
+                    getGroupNameToCreate();
+                    break;
+                case 7:
+                    getGroupNameToDelete();
+                    break;
+                case 8:
+                    addSingleEditToGroup();
+                default:
+                    break;
             }
+            groupContainer.update();
             System.out.println(editContainer.stringRepr());
+            System.out.println(groupContainer.stringRepr());
+            System.out.println("\n");
         }
     }
 
@@ -85,6 +99,45 @@ public class InteractiveModelTestDriver {
         }
     }
 
+    public static void getGroupNameToCreate() {
+        System.out.println("Enter the name of the group to create:");
+        String name = scanner.nextLine();
+        if (name.endsWith("##")) {
+            name = name.substring(0, name.length() - 2);
+        }
+        groupContainer.create(name);
+    }
+
+    public static void addSingleEditToGroup() {
+        System.out.println("Enter the name of the group:");
+        String name = scanner.nextLine();
+        if (name.endsWith("##")) {
+            name = name.substring(0, name.length() - 2);
+        }
+        int choiceNum = 0;
+        while (true) {
+            System.out.println("Enter the ID of the edit to add to group: " + name);
+            String choice = scanner.nextLine();
+            try {
+                choiceNum = Integer.parseInt(choice);
+                break;
+            }
+            catch (NumberFormatException e) {
+                System.out.println("Invalid choice....");
+            }
+        }
+        groupContainer.add(name, choiceNum);
+    }
+
+    public static void getGroupNameToDelete() {
+        System.out.println("Enter the name of the group to create:");
+        String name = scanner.nextLine();
+        if (name.endsWith("##")) {
+            name = name.substring(0, name.length() - 2);
+        }
+        groupContainer.removeGroup(name);
+    }
+
     public static void makeChoice() {
         while (true) {
             System.out.println("Enter one of the following numbers:");
@@ -93,10 +146,13 @@ public class InteractiveModelTestDriver {
             System.out.println("  3. Make an edit no longer visible");
             System.out.println("  4. Undo the most recent edit");
             System.out.println("  5. Undo an edit by ID");
+            System.out.println("  6. Create a new EditGroup");
+            System.out.println("  7. Delete an EditGroup");
+            System.out.println("  8. Add an edit to a group (look in Container representation for ID)");
             String choice = scanner.nextLine();
             try {
                 int chosen = Integer.parseInt(choice);
-                if (chosen > 0 && chosen < 6) {
+                if (chosen > 0 && chosen < 9) {
                     InteractiveModelTestDriver.choice = chosen;
                     break;
                 }

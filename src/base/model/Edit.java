@@ -83,6 +83,10 @@ public class Edit {
         }
     }
 
+    public boolean isDeleted() {
+        return this.deleted;
+    }
+
     public int getPosition() {
         return this.position;
     }
@@ -170,6 +174,7 @@ public class Edit {
         this.next = newEdit;
         newEdit.previous = this;
         newEdit.next = oldNext;
+        this.id = Edit.getNextGeneratedId();
         return newEdit;
     }
 

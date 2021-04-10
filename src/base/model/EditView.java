@@ -29,4 +29,11 @@ public class EditView {
     public static EditView createFromEdit(Edit edit) {
         return new EditView(edit.getId(), edit.getText(), edit.isEditAnAddition());
     }
+
+    public String forInteractiveModelTest(int maxLen) {
+        String theText = (this.text.length() > (maxLen - 4)) ? this.text.substring(0,maxLen - 4) + "...." : this.text;
+        String theAction = (this.isAddition) ? "INSERT: " : "DELETE: ";
+        return " - " + theAction + theText;
+    }
+
 }
