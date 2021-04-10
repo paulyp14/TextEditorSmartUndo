@@ -217,10 +217,37 @@ public class EditContainer {
             edit = edit.getNext();
         }
         String editString = String.join(",\n", editStringReprs);
+
+        String stackLine = "  Stack contents: ";
+        if (!this.mostRecent.empty()) {
+            Stack<Edit> tempStack = new Stack<>();
+            StringBuilder stackRepr = new StringBuilder();
+            for (int i = 0; i < 10; i++) {
+                tempStack.push(this.mostRecent.pop());
+                if (this.mostRecent.empty()) {
+                    break;
+                }
+            }
+            String end = (this.mostRecent.empty()) ? "" : "...";
+            int counter = 0;
+            while(!tempStack.empty()) {
+                if (counter > 0) {
+                    stackRepr.append(", ");
+                }
+                stackRepr.append(tempStack.peek().getId());
+                this.mostRecent.push(tempStack.pop());
+                counter++;
+            }
+            stackLine += end + stackRepr.toString();
+        } else {
+            stackLine += "EMPTY";
+        }
+
         String[] components = {
                 separator,
                 "EditContainer",
                 "  Size: " + this.size,
+                stackLine,
                 "  Represents text: \n",
                 this.asText(),
                 "\n",
