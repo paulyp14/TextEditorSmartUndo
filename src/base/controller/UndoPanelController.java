@@ -77,12 +77,6 @@ public class UndoPanelController implements ControllerInterface
         
     }
 	
-    public static void main(String args[])
-    {
-        UndoPanelController upc = new UndoPanelController(null, null);
-        upc.addNewGroup();
-    }
-
     @Override
     public void deleteRandomEdits(int groupIndex)
     {
