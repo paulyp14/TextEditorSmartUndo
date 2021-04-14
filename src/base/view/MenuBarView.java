@@ -25,11 +25,11 @@ public class MenuBarView extends JMenuBar {
         menuFile.add(menuItem_quit);
 
         JMenu menuEdit = new JMenu("Edit");
-        JMenuItem menuItem_undo  = new JMenuItem("Undo");
+        JMenuItem menuItem_newGroup  = new JMenuItem("New Group");
         JMenuItem menuItem_arbitrary = new JMenuItem("Arbitrary Undo Selected Group");
         JMenuItem menuItem_deleteGroup = new JMenuItem("Delete Edit Group");
         JMenuItem menuItem_deleteAllGroup = new JMenuItem("Delete All Edit Group");
-        menuEdit.add(menuItem_undo);
+        menuEdit.add(menuItem_newGroup);
         menuEdit.add(menuItem_arbitrary);
         menuEdit.add(menuItem_deleteGroup);
         menuEdit.add(menuItem_deleteAllGroup);

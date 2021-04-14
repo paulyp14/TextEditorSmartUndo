@@ -78,6 +78,14 @@ public class EditGroupView extends JPanel implements ActionListener {
     }
 
     /**
+     * When deleting an edit group in a list, we decrement group  
+     * index to fill in the holes of our arraylist.
+     */
+    public void moveIndexDown() {
+        groupIndex -= 1;
+    }
+
+    /**
      * Collapse this edit group and allow another group 
      * to be maximized if desired by user.
      */

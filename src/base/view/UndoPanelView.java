@@ -52,6 +52,34 @@ public class UndoPanelView extends JPanel {
     // public void setController(UndoPanelController controller) {
     //     this.controller = controller;
     // }
+
+
+    /**
+     * Add a new edit group on UndoPanel and place at bottom.
+     * Creates a new container in Model.
+     * 
+     * @return true if delete was successful
+     */
+    public boolean createNewGroup() {
+        
+        if (editGroupViews.size()  >= 10) {
+            System.out.println("UndoPanelView.createNewGroup: Cannot exceed 10 edit groups");
+            return false;
+        }
+
+        // Create a new EditGroupView
+        int groupIndex = editGroupViews.size();
+        EditGroupView newEditGroup = new EditGroupView(this, groupIndex, SIZE_WIDTH);
+        editGroupViews.add(newEditGroup);
+        editGroupViews.get(groupIndex).expandEditList();
+
+        // Add edit group ui component
+        remove(newGroupBtn);
+        add(newEditGroup);
+        add(newGroupBtn);
+
+        return true;
+    }
     
     /**
      * Delete an edit group on UndoPanel given an index. 
@@ -67,8 +95,14 @@ public class UndoPanelView extends JPanel {
             return false;
         }
 
+        onCollapseEditGroup();                  // reset group being focused
         this.remove(editGroupViews.get(index)); // remove ui component
         editGroupViews.remove(index);           // remove from list
+
+        // we move all group index down
+        for (int i = index+1; i < editGroupViews.size(); i++) {
+            editGroupViews.get(i).moveIndexDown();
+        }
 
         // TODO remove edit from text box
 
@@ -103,31 +137,6 @@ public class UndoPanelView extends JPanel {
 
     //**********    PRIVATE METHODS   **********//
 
-
-    /**
-     * Add a new edit group on UndoPanel and place at bottom.
-     * Creates a new container in Model.
-     * 
-     * @return true if delete was successful
-     */
-    private boolean createNewGroup() {
-        
-        if (editGroupViews.size()  >= 10) {
-            System.out.println("UndoPanelView.createNewGroup: Cannot exceed 10 edit groups");
-            return false;
-        }
-
-        // Create a new EditGroupView
-        EditGroupView newEditGroup = new EditGroupView(this, editGroupViews.size(), SIZE_WIDTH);
-        editGroupViews.add(newEditGroup);
-
-        // Add edit group ui component
-        remove(newGroupBtn);
-        add(newEditGroup);
-        add(newGroupBtn);
-
-        return true;
-    }
 
     /**
      * Collapse the UndoPanel section
