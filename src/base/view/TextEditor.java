@@ -36,8 +36,6 @@ public class TextEditor {
 
         // Set up Models
 
-        // Set up Controllers
-
         // Set up Views
         frame = new JFrame("TESU");
         MenuBarView menu = new MenuBarView();
@@ -54,6 +52,9 @@ public class TextEditor {
         frame.getContentPane().add(BorderLayout.NORTH, menu);
         frame.getContentPane().add(BorderLayout.CENTER, tbox_scroll);
         frame.getContentPane().add(BorderLayout.LINE_START, undoPanel);
+
+
+        // Set up Controllers
     }
 
     /**

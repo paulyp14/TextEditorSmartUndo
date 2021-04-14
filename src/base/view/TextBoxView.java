@@ -19,13 +19,12 @@ public class TextBoxView extends JTextArea {
         this.setLineWrap(true);
     }
 
-    // Overloaded constructor
-    //TextBoxView(TextBoxController controller) {
-    //    this.controller = controller
-    //}
-
 
     //**********    PUBLIC  METHODS   **********//
+
+    // public void setController(TextBoxController controller) {
+    //     this.controller = controller;
+    // }
 
     //**********    PRIVATE METHODS   **********//
     

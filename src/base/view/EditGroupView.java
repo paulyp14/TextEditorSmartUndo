@@ -2,18 +2,36 @@ import javax.swing.*;
 import static javax.swing.ScrollPaneConstants.*;
 
 import java.awt.Dimension;
-import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 
+/**
+ * Class that manages the UI component of a edit group.
+ * 
+ * @author Thanh Tung Nguyen
+ */
 public class EditGroupView extends JPanel implements ActionListener {
     
     private int groupIndex;
-    UndoPanelView parentView;
-    private JList<String> editList;
-    private DefaultListModel<String> listModel;
+    private UndoPanelView parentView;
+    private int SIZE_WIDTH;
 
-    private int SIZE_WIDTH = 500;
+    private DefaultListModel<String> listModel;
+    private JList<String> editList;
+    private JPanel middlePanel;
+    private JPanel bottomPanel;
+    private JButton expandCollapseBtn;
+
+    private String deleteImgPath = "..\\..\\..\\resources\\delete.png";
+    private String expandImgPath = "..\\..\\..\\resources\\plus.png";
+    private String collapseImgPath = "..\\..\\..\\resources\\minus.png";
+
+
 
     public EditGroupView() {}
 
@@ -25,27 +43,30 @@ public class EditGroupView extends JPanel implements ActionListener {
         this.SIZE_WIDTH = width;
 
         // Set panel settings
-        //Dimension d = new Dimension(width, 200);
-        //this.setPreferredSize(new Dimension(width, SIZE_HEIGHT));
-        //this.setSize(d);
-        BorderLayout borderLayout = new BorderLayout();
-        setLayout(borderLayout);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setTopPanel();
+        //add(new JSeparator());
         setEditList();
         setBottomPanel();
+        add(new JSeparator());
 
-        listModel.addElement("1");
+        listModel.addElement("2");
         listModel.addElement("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
-        listModel.addElement("KEKW");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
         editList.ensureIndexIsVisible(listModel.getSize() - 1);
     }
 
@@ -56,56 +77,109 @@ public class EditGroupView extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Collapse this edit group and allow another group 
+     * to be maximized if desired by user.
+     */
+    public void collapseEditList() {
+        middlePanel.setVisible(false);
+        bottomPanel.setVisible(false);
+
+        parentView.onCollapseEditGroup();
+    }
+
+    /**
+     * Expand this edit group and minimize (if any)
+     * the currently maximized edit group.
+     */
+    public void expandEditList() {
+        middlePanel.setVisible(true);
+        bottomPanel.setVisible(true);
+
+        parentView.onExpandEditGroup(groupIndex);
+    }
+
 
     //**********    PRIVATE METHODS   **********//
 
     private void setTopPanel() {
 
-        JPanel topPanel = new JPanel();
-        //topPanel.setPreferredSize(new Dimension(9999, 50));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 4));
+        topPanel.setPreferredSize(new Dimension(SIZE_WIDTH, 35));
+        //topPanel.setBackground(Color.LIGHT_GRAY);
         
-        JLabel groupTitle = new JLabel("1");
-        //groupTitle.setHorizontalAlignment(JLabel.LEFT);
-        //groupTitle.setHorizontalTextPosition(SwingConstants.LEFT);
+        // Edit group name
+        JLabel groupTitle = new JLabel("Edit Group " + (groupIndex + 1), SwingConstants.LEFT);
+        groupTitle.setFont(new Font("Arial", Font.BOLD, 14));
+        
 
-        // ImageIcon deleteIcon = new ImageIcon("garbage.png");
-        // ImageIcon minimizeIcon = new ImageIcon("minus.png");
-        // ImageIcon maximizeIcon = new ImageIcon("addition.png");
+        // Button for delete edit group
+        JButton deleteGroupBtn = new JButton();
+        deleteGroupBtn.setIcon(new ImageIcon(deleteImgPath));
+        deleteGroupBtn.setBorderPainted(false);
+        deleteGroupBtn.setContentAreaFilled(false);
+        deleteGroupBtn.setMargin(new Insets(0, 0, 0, 0));
+        
+        // Button for expanding and collapsing Edit Group
+        expandCollapseBtn = new JButton();
+        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
+        expandCollapseBtn.setBorderPainted(false);
+        expandCollapseBtn.setContentAreaFilled(false);
+        expandCollapseBtn.setMargin(new Insets(0, 0, 0, 0));
+
+        // We wrap in another JPanel so we can align to the right
+        JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT,0, 0));
+        btnWrapper.setPreferredSize(new Dimension(SIZE_WIDTH-120, 35));
+        btnWrapper.add(deleteGroupBtn);
+        btnWrapper.add(expandCollapseBtn);
+
         topPanel.add(groupTitle);
-
-        JButton x = new JButton("X");
-        JButton m = new JButton("+");
-        m.setAlignmentX(JButton.RIGHT_ALIGNMENT);
-        topPanel.add(x);
-        topPanel.add(m);
-
-        add(topPanel, BorderLayout.NORTH);
+        topPanel.add(btnWrapper);
+        add(topPanel);
     }
 
     private void setEditList() {
 
         listModel = new DefaultListModel<>(); 
         editList = new JList<>(listModel);
-        //editList.setVisibleRowCount(2);
-        editList.setPreferredSize(new Dimension(SIZE_WIDTH - 30, 200));
         editList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //only one item can be selected at a time
+
         JScrollPane scrollPane = new JScrollPane(editList);
-        //scrollPane.setAlignmentX(JScrollPane.LEFT_ALIGNMENT);
-        scrollPane.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER); // removes horizontal scroll bar
+        scrollPane.setPreferredSize(new Dimension(SIZE_WIDTH, 200));
+
+        // Style the scroll bar a bit
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbHighlightColor = Color.GRAY;
+            }
+        });
         
-        add(scrollPane, BorderLayout.CENTER);
+        middlePanel = new JPanel();
+        middlePanel.add(scrollPane);
+        middlePanel.setBackground(Color.LIGHT_GRAY);
+
+        add(middlePanel);
     }
 
     private void setBottomPanel() {
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(new JButton("Undo"));
-        bottomPanel.add(new JButton("Undo All"));
+        bottomPanel = new JPanel();
 
-        // for later when we need padding
-        //button2.setBorder(new EmptyBorder(0, 20, 0, 0));
+        JButton undoBtn = new JButton("Undo");
+        undoBtn.setBackground(Color.WHITE);
 
-        add(bottomPanel, BorderLayout.SOUTH);
+        JButton undoAllBtn = new JButton("Undo All");
+        undoAllBtn.setBackground(Color.WHITE);
+
+        bottomPanel.add(undoBtn);
+        bottomPanel.add(undoAllBtn);
+        bottomPanel.setBackground(Color.GRAY);
+
+        ((FlowLayout)bottomPanel.getLayout()).setHgap(25);
+
+        add(bottomPanel);
     }
 
     /**
@@ -115,8 +189,17 @@ public class EditGroupView extends JPanel implements ActionListener {
      * @param str
      * @return 0 if yes, 1 if no
      */
-    private int showConfirmDialog(String str) {
-        return JOptionPane.NO_OPTION;
+    private int showConfirmDialog(String message) {
+
+        int dialogResult = JOptionPane.showConfirmDialog (
+                null, 
+                message,
+                "TESU",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        return dialogResult;
     }
 
     /**
@@ -136,7 +219,16 @@ public class EditGroupView extends JPanel implements ActionListener {
      * @return true if added new edit successfully
      */
     private boolean addNewEdit(String str) {
-        return false;
+
+        if (str == null || str == "") {
+            System.out.println("EditGroupView.addNewEdit: String is empty.");
+            return false;
+        }
+
+        listModel.addElement(str);
+        editList.ensureIndexIsVisible(listModel.getSize() - 1); // make sure it's scrolled down when adding new items
+
+        return true;
     }
 
     /**
@@ -147,33 +239,22 @@ public class EditGroupView extends JPanel implements ActionListener {
      * @return true if undo'd edit successfully
      */
     private boolean undoEdit(int index) {
-        return false;
+
+        if (index < 0 || index >= listModel.size()) {
+            System.out.println("EditGroupView.undoEdit: index out of range.");
+            return false;
+        }
+        
+        listModel.remove(index);
+        return true;
     }
 
     /**
      * Undo all edits in the edit list for this group and 
      * update the Model.
-     * 
-     * @return true if undo all edits successfully
      */
-    private boolean undoAllEdits() {
-        return false;
-    }
-
-    /**
-     * Minimize this edit group and allow another group 
-     * to be maximized if desired by user.
-     */
-    private void minimizeEditList() {
-        
-    }
-
-    /**
-     * Maximize this edit group and minimize (if any)
-     * the currently maximized edit group.
-     */
-    private void maximizeEditList() {
-
+    private void undoAllEdits() {
+        listModel.clear();
     }
 
     /**
@@ -181,6 +262,6 @@ public class EditGroupView extends JPanel implements ActionListener {
      * edit group component from panel.
      */
     private void deleteThisGroup() {
-        
+        parentView.deleteEditGroup(groupIndex);
     }
 }

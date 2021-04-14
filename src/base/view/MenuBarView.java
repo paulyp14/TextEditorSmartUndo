@@ -21,21 +21,31 @@ public class MenuBarView extends JMenuBar {
         JMenu menuFile = new JMenu("File");
         JMenuItem menuItem_new  = new JMenuItem("New");
         JMenuItem menuItem_quit = new JMenuItem("Quit");
-
-        // TODO add actionlistener
-
         menuFile.add(menuItem_new);
         menuFile.add(menuItem_quit);
 
-        this.add(menuFile);
-    }
+        JMenu menuEdit = new JMenu("Edit");
+        JMenuItem menuItem_undo  = new JMenuItem("Undo");
+        JMenuItem menuItem_arbitrary = new JMenuItem("Arbitrary Undo Selected Group");
+        JMenuItem menuItem_deleteGroup = new JMenuItem("Delete Edit Group");
+        JMenuItem menuItem_deleteAllGroup = new JMenuItem("Delete All Edit Group");
+        menuEdit.add(menuItem_undo);
+        menuEdit.add(menuItem_arbitrary);
+        menuEdit.add(menuItem_deleteGroup);
+        menuEdit.add(menuItem_deleteAllGroup);
 
-    // Overloaded constructor
-    //MenuBarView(MenuBarController controller) {
-    //    this.controller = controller
-    //}
+        // TODO add actionlistener
+
+        this.add(menuFile);
+        this.add(menuEdit);
+    }
+    
     
     //**********    PUBLIC  METHODS   **********//
+
+    // public void setController(MenuBarController controller) {
+    //     this.controller = controller;
+    // }
 
 
     //**********    PRIVATE METHODS   **********//
@@ -47,7 +57,16 @@ public class MenuBarView extends JMenuBar {
      * @param str
      * @return 0 if yes, 1 if no
      */
-    private int showConfirmDialog(String str) { 
-        return JOptionPane.NO_OPTION;
+    private int showConfirmDialog(String message) { 
+
+        int dialogResult = JOptionPane.showConfirmDialog (
+                null, 
+                message,
+                "TESU",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        return dialogResult;
     }
 }

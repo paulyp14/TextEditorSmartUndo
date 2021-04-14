@@ -1,14 +1,24 @@
 import java.awt.Dimension;
 import java.util.ArrayList;
+
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Color;
+
 
 /**
+ * Class that manages the Undo Panel View.
  * 
+ * @author Thanh Tung Nguyen
  */
 public class UndoPanelView extends JPanel {
     
     //private UndoPanelController controller
     private ArrayList<EditGroupView> editGroupViews;
+    private int curFocusedGroup = -1;
+    private JButton newGroupBtn;
 
     private final int SIZE_WIDTH = 200;
 
@@ -20,23 +30,29 @@ public class UndoPanelView extends JPanel {
     UndoPanelView(int height) {
 
         this.setPreferredSize(new Dimension(SIZE_WIDTH, height));
+        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //((FlowLayout)getLayout()).setVgap(0);
 
-        EditGroupView editGroup1 = new EditGroupView(this, 0, SIZE_WIDTH);
-        EditGroupView editGroup2 = new EditGroupView(this, 0, SIZE_WIDTH);
-        EditGroupView editGroup3 = new EditGroupView(this, 0, SIZE_WIDTH);
-        add(editGroup1);
-        add(editGroup2);
-        add(editGroup3);
-        remove(editGroup2);
+        editGroupViews = new ArrayList<EditGroupView>();
+
+        // EditGroupView editGroup1 = new EditGroupView(this, 0, SIZE_WIDTH);
+        // editGroupViews.add(editGroup1);
+        // add(editGroup1);
+
+        newGroupBtn = new JButton("New Group");
+        newGroupBtn.setBackground(Color.WHITE);
+        newGroupBtn.setFont(new Font("Arial", Font.BOLD, 15));
+        add(newGroupBtn);
     }
-
-    //UndoPanelView(UndoPanelController controller) {
-    //    this.controller = controller
-    //}
 
 
     //**********    PUBLIC  METHODS   **********//
 
+
+    // public void setController(UndoPanelController controller) {
+    //     this.controller = controller;
+    // }
+    
     /**
      * Delete an edit group on UndoPanel given an index. 
      * Will remove UI component and remove edit from text box.
@@ -45,11 +61,48 @@ public class UndoPanelView extends JPanel {
      * @return true if delete was successful
      */
     public boolean deleteEditGroup(int index) {
-        return false;
+        
+        if (index < 0 || index >= editGroupViews.size()) {
+            System.out.println("UndoPanelView.deleteEditGroup: Index of edit group is out of range.");
+            return false;
+        }
+
+        this.remove(editGroupViews.get(index)); // remove ui component
+        editGroupViews.remove(index);           // remove from list
+
+        // TODO remove edit from text box
+
+        return true;
+    }
+
+    /**
+     * Called when user expands an edit group, making it the currently 
+     * focused edit group and collapses (if any) the other edit group.
+     * 
+     * @param index
+     */
+    public void onExpandEditGroup(int index) {
+
+        // if any other edit group is expanded, collapse it before focusing on another edit group
+        if (curFocusedGroup >= 0 && curFocusedGroup < editGroupViews.size()) {
+            editGroupViews.get(curFocusedGroup).collapseEditList();
+        }
+
+        // mark this the current focused edit group
+        curFocusedGroup = index;
+    }
+
+    /**
+     * Called when a user collapses an edit group, notifying no  
+     * edit group is being focused.
+     */
+    public void onCollapseEditGroup() {
+        curFocusedGroup = -1;
     }
 
 
     //**********    PRIVATE METHODS   **********//
+
 
     /**
      * Add a new edit group on UndoPanel and place at bottom.
@@ -58,20 +111,35 @@ public class UndoPanelView extends JPanel {
      * @return true if delete was successful
      */
     private boolean createNewGroup() {
-        return false;
+        
+        if (editGroupViews.size()  >= 10) {
+            System.out.println("UndoPanelView.createNewGroup: Cannot exceed 10 edit groups");
+            return false;
+        }
+
+        // Create a new EditGroupView
+        EditGroupView newEditGroup = new EditGroupView(this, editGroupViews.size(), SIZE_WIDTH);
+        editGroupViews.add(newEditGroup);
+
+        // Add edit group ui component
+        remove(newGroupBtn);
+        add(newEditGroup);
+        add(newGroupBtn);
+
+        return true;
     }
 
     /**
-     * Minimizes the UndoPanel section
+     * Collapse the UndoPanel section
      */
-    private void minimizeUndoPanel() {
+    private void collapseUndoPanel() {
 
     }
 
     /**
-     * Re-open/maximize the UndoPanel section
+     * Re-open/expand the UndoPanel section
      */
-    private void maximizeUndoPanel() {
+    private void expandUndoPanel() {
         
     }
 
