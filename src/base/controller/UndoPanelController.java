@@ -17,7 +17,23 @@ public class UndoPanelController implements ControllerInterface
         this.undoPanelView = undoPanelView;
         this.groupContainer = groupContainer;
     }
-
+	
+    public View getUndoPanelView()
+    {
+    	return this.undoPanelView;
+    }
+    public GroupContainer getGroupContainer()
+    {
+    	return this.getGroupContainer;
+    }
+    public void setUndoPanelView(View undoPan)
+    {
+    	this.undoPanelView=undoPan;
+    }
+    public void setGroupContainer(GroupContainer groupC)
+    {
+    	this.groupContainer = groupC;
+    }
     @Override
     public void addNewEdit(int groupIndex)
     {
