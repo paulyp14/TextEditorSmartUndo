@@ -1,0 +1,275 @@
+import javax.swing.*;
+import static javax.swing.ScrollPaneConstants.*;
+
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+
+
+/**
+ * Class that manages the UI component of a edit group.
+ * 
+ * @author Thanh Tung Nguyen
+ */
+public class EditGroupView extends JPanel implements ActionListener {
+    
+    private int groupIndex;
+    private UndoPanelView parentView;
+    private int SIZE_WIDTH;
+
+    private DefaultListModel<String> listModel;
+    private JList<String> editList;
+    private JPanel middlePanel;
+    private JPanel bottomPanel;
+    private JButton expandCollapseBtn;
+
+    private String deleteImgPath = "..\\..\\..\\resources\\delete.png";
+    private String expandImgPath = "..\\..\\..\\resources\\plus.png";
+    private String collapseImgPath = "..\\..\\..\\resources\\minus.png";
+
+
+
+    public EditGroupView() {}
+
+    public EditGroupView(UndoPanelView parentView, int groupIndex, int width) {
+
+        // Set index and parent panel ref
+        this.groupIndex = groupIndex;
+        this.parentView = parentView;
+        this.SIZE_WIDTH = width;
+
+        // Set panel settings
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        setTopPanel();
+        //add(new JSeparator());
+        setEditList();
+        setBottomPanel();
+        add(new JSeparator());
+
+        listModel.addElement("2");
+        listModel.addElement("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        listModel.addElement("TEST");
+        editList.ensureIndexIsVisible(listModel.getSize() - 1);
+    }
+
+
+    //**********    PUBLIC  METHODS   **********//
+
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    /**
+     * When deleting an edit group in a list, we decrement group  
+     * index to fill in the holes of our arraylist.
+     */
+    public void moveIndexDown() {
+        groupIndex -= 1;
+    }
+
+    /**
+     * Collapse this edit group and allow another group 
+     * to be maximized if desired by user.
+     */
+    public void collapseEditList() {
+        middlePanel.setVisible(false);
+        bottomPanel.setVisible(false);
+
+        parentView.onCollapseEditGroup();
+    }
+
+    /**
+     * Expand this edit group and minimize (if any)
+     * the currently maximized edit group.
+     */
+    public void expandEditList() {
+        middlePanel.setVisible(true);
+        bottomPanel.setVisible(true);
+
+        parentView.onExpandEditGroup(groupIndex);
+    }
+
+
+    //**********    PRIVATE METHODS   **********//
+
+    private void setTopPanel() {
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 4));
+        topPanel.setPreferredSize(new Dimension(SIZE_WIDTH, 35));
+        //topPanel.setBackground(Color.LIGHT_GRAY);
+        
+        // Edit group name
+        JLabel groupTitle = new JLabel("Edit Group " + (groupIndex + 1), SwingConstants.LEFT);
+        groupTitle.setFont(new Font("Arial", Font.BOLD, 14));
+        
+
+        // Button for delete edit group
+        JButton deleteGroupBtn = new JButton();
+        deleteGroupBtn.setIcon(new ImageIcon(deleteImgPath));
+        deleteGroupBtn.setBorderPainted(false);
+        deleteGroupBtn.setContentAreaFilled(false);
+        deleteGroupBtn.setMargin(new Insets(0, 0, 0, 0));
+        
+        // Button for expanding and collapsing Edit Group
+        expandCollapseBtn = new JButton();
+        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
+        expandCollapseBtn.setBorderPainted(false);
+        expandCollapseBtn.setContentAreaFilled(false);
+        expandCollapseBtn.setMargin(new Insets(0, 0, 0, 0));
+
+        // We wrap in another JPanel so we can align to the right
+        JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT,0, 0));
+        btnWrapper.setPreferredSize(new Dimension(SIZE_WIDTH-120, 35));
+        btnWrapper.add(deleteGroupBtn);
+        btnWrapper.add(expandCollapseBtn);
+
+        topPanel.add(groupTitle);
+        topPanel.add(btnWrapper);
+        add(topPanel);
+    }
+
+    private void setEditList() {
+
+        listModel = new DefaultListModel<>(); 
+        editList = new JList<>(listModel);
+        editList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //only one item can be selected at a time
+
+        JScrollPane scrollPane = new JScrollPane(editList);
+        scrollPane.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER); // removes horizontal scroll bar
+        scrollPane.setPreferredSize(new Dimension(SIZE_WIDTH, 200));
+
+        // Style the scroll bar a bit
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbHighlightColor = Color.GRAY;
+            }
+        });
+        
+        middlePanel = new JPanel();
+        middlePanel.add(scrollPane);
+        middlePanel.setBackground(Color.LIGHT_GRAY);
+
+        add(middlePanel);
+    }
+
+    private void setBottomPanel() {
+
+        bottomPanel = new JPanel();
+
+        JButton undoBtn = new JButton("Undo");
+        undoBtn.setBackground(Color.WHITE);
+
+        JButton undoAllBtn = new JButton("Undo All");
+        undoAllBtn.setBackground(Color.WHITE);
+
+        bottomPanel.add(undoBtn);
+        bottomPanel.add(undoAllBtn);
+        bottomPanel.setBackground(Color.GRAY);
+
+        ((FlowLayout)bottomPanel.getLayout()).setHgap(25);
+
+        add(bottomPanel);
+    }
+
+    /**
+     * Show a dialog box to confirm if user wants to 
+     * proceed with this action.
+     * 
+     * @param str
+     * @return 0 if yes, 1 if no
+     */
+    private int showConfirmDialog(String message) {
+
+        int dialogResult = JOptionPane.showConfirmDialog (
+                null, 
+                message,
+                "TESU",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        return dialogResult;
+    }
+
+    /**
+     * Highlight the edit text on the TextArea
+     * 
+     * @param index
+     */
+    private void highlightEdit(int index) {
+
+    }
+
+    /**
+     * Add a new edit in the edit list of this group and
+     * update the Model.
+     * 
+     * @param str
+     * @return true if added new edit successfully
+     */
+    private boolean addNewEdit(String str) {
+
+        if (str == null || str == "") {
+            System.out.println("EditGroupView.addNewEdit: String is empty.");
+            return false;
+        }
+
+        listModel.addElement(str);
+        editList.ensureIndexIsVisible(listModel.getSize() - 1); // make sure it's scrolled down when adding new items
+
+        return true;
+    }
+
+    /**
+     * Undo an edit in the edit list of this group and 
+     * update the Model.
+     * 
+     * @param index of selected undo
+     * @return true if undo'd edit successfully
+     */
+    private boolean undoEdit(int index) {
+
+        if (index < 0 || index >= listModel.size()) {
+            System.out.println("EditGroupView.undoEdit: index out of range.");
+            return false;
+        }
+        
+        listModel.remove(index);
+        return true;
+    }
+
+    /**
+     * Undo all edits in the edit list for this group and 
+     * update the Model.
+     */
+    private void undoAllEdits() {
+        listModel.clear();
+    }
+
+    /**
+     * Call the parent UndoPanelView to remove this 
+     * edit group component from panel.
+     */
+    private void deleteThisGroup() {
+        parentView.deleteEditGroup(groupIndex);
+    }
+}
