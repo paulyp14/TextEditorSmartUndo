@@ -112,6 +112,22 @@ public class GroupContainer {
 		this.add(groupName, new ArrayList<>(Collections.singletonList(editId)));
 	}
 
+	public void undoEditsInGroup(String groupName, ArrayList<Integer> editIds) {
+		if (!this.groups.containsKey(groupName)) {
+			System.out.println("ERROR: this group name does not exist");
+			// TODO this should be an exception
+			return;
+		}
+
+		this.editContainer.undoByIds(editIds);
+		this.update();
+	}
+
+	public void undoEditsInDefaultGroup(ArrayList<Integer> editIds) {
+		this.editContainer.undoByIds(editIds);
+		this.update();
+	}
+
 	private void syncEditGroup(String groupName, EditGroup editGroup, ArrayList<Integer> existingIds) {
 		// remove any edits that are no longer valid
 		ArrayList<Integer> editsToRemove = new ArrayList<>();
@@ -180,6 +196,15 @@ public class GroupContainer {
 		}
 		finalRepr.add(separator.toString());
 		return String.join("\n", finalRepr);
+	}
+
+	public ArrayList<EditView> viewEditsInGroup(String groupName) {
+		if (!this.groups.containsKey(groupName)) {
+			System.out.println("ERROR: this group name does not exist");
+			// TODO this should be an exception
+			return null;
+		}
+		return this.groups.get(groupName).getEdits();
 	}
 
 	public ArrayList<EditView> viewEditsInDefaultGroup() {
