@@ -51,6 +51,15 @@ public class EditGroupView extends JPanel implements ActionListener {
         setEditList();
         setBottomPanel();
         add(new JSeparator());
+
+        listModel.addElement("1");
+        listModel.addElement("2");
+        listModel.addElement("3");
+        listModel.addElement("4");
+        listModel.addElement("5");
+        listModel.addElement("6");
+        listModel.addElement("7");
+        listModel.addElement("8");
     }
 
 
@@ -123,6 +132,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         }
             
         listModel.remove(index);
+        // TODO use controller
         return true;
     }
 
@@ -138,6 +148,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         }
             
         listModel.clear();
+        // TODO use controller
         return true;
     }
 
@@ -267,11 +278,26 @@ public class EditGroupView extends JPanel implements ActionListener {
 
         JButton undoBtn = new JButton("Undo");
         undoBtn.setBackground(Color.WHITE);
-        // TODO imple event handling
+        undoBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int selectedItem = editList.getSelectedIndex();
+                if (selectedItem != -1)
+                    undoEdit(selectedItem);
+                else
+                    undoEdit(listModel.size()-1);
+            }
+        });
 
         JButton undoAllBtn = new JButton("Undo All");
         undoAllBtn.setBackground(Color.WHITE);
-        // TODO imple event handling
+        undoAllBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                undoAllEdits();
+            }
+        });
 
         bottomPanel.add(undoBtn);
         bottomPanel.add(undoAllBtn);
