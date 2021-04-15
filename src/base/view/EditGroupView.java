@@ -1,7 +1,9 @@
 package base.view;
 
+import base.controller.*;
 import javax.swing.*;
 import static javax.swing.ScrollPaneConstants.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import java.awt.Dimension;
 import java.awt.Color;
@@ -9,7 +11,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
 
 /**
@@ -17,8 +18,9 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
  * 
  * @author Thanh Tung Nguyen
  */
-public class EditGroupView extends JPanel implements ActionListener {
+public class EditGroupView extends JPanel {
     
+    private UndoPanelController controller;
     private int groupIndex;
     private UndoPanelView parentView;
     private int SIZE_WIDTH;
@@ -29,18 +31,22 @@ public class EditGroupView extends JPanel implements ActionListener {
     private JPanel bottomPanel;
     private JButton expandCollapseBtn;
 
-    private String deleteImgPath = "..\\..\\..\\resources\\delete.png";
-    private String expandImgPath = "..\\..\\..\\resources\\plus.png";
-    private String collapseImgPath = "..\\..\\..\\resources\\minus.png";
+    private String deleteImgPath = "resources/delete.png";
+    private String expandImgPath = "resources/plus.png";
+    private String collapseImgPath = "resources/minus.png";
 
 
-
-    public EditGroupView() {}
-
-    public EditGroupView(UndoPanelView parentView, int groupIndex, int width) {
+    /**
+     * Constructor
+     * @param parentView
+     * @param groupIndex
+     * @param width of ui component
+     */
+    public EditGroupView(UndoPanelView parentView, UndoPanelController controller, int groupIndex, int width) {
 
         // Set index and parent panel ref
         this.groupIndex = groupIndex;
+        this.controller = controller;
         this.parentView = parentView;
         this.SIZE_WIDTH = width;
 
@@ -51,14 +57,19 @@ public class EditGroupView extends JPanel implements ActionListener {
         setEditList();
         setBottomPanel();
         add(new JSeparator());
+
+        // listModel.addElement("1");
+        // listModel.addElement("2");
+        // listModel.addElement("3");
+        // listModel.addElement("4");
+        // listModel.addElement("5");
+        // listModel.addElement("6");
+        // listModel.addElement("61");
     }
 
 
     //**********    PUBLIC  METHODS   **********//
 
-    public void actionPerformed(ActionEvent e) {
-
-    }
 
     /**
      * Returns group index of this group edit.
@@ -123,6 +134,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         }
             
         listModel.remove(index);
+        // TODO use controller
         return true;
     }
 
@@ -138,6 +150,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         }
             
         listModel.clear();
+        // TODO use controller
         return true;
     }
 
@@ -157,7 +170,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(false);
         bottomPanel.setVisible(false);
 
-        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
+        expandCollapseBtn.setIcon(new ImageIcon(expandImgPath));
         parentView.onCollapseEditGroup();
     }
 
@@ -169,13 +182,17 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(true);
         bottomPanel.setVisible(true);
 
-        expandCollapseBtn.setIcon(new ImageIcon(expandImgPath));
+        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
         parentView.onExpandEditGroup(groupIndex);
     }
 
 
     //**********    PRIVATE METHODS   **********//
 
+
+    /**
+     * Sets up the UI of the top panel of the edit group.
+     */
     private void setTopPanel() {
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 4));
@@ -192,6 +209,16 @@ public class EditGroupView extends JPanel implements ActionListener {
         deleteGroupBtn.setBorderPainted(false);
         deleteGroupBtn.setContentAreaFilled(false);
         deleteGroupBtn.setMargin(new Insets(0, 0, 0, 0));
+        deleteGroupBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                int response = showConfirmDialog("Are you sure you wish to delete this edit group?");
+                if (response == 0) { // presses yes
+                    controller.deleteGroup(groupIndex);
+                }
+            }
+        });
         
         // Button for expanding and collapsing Edit Group
         expandCollapseBtn = new JButton();
@@ -199,6 +226,16 @@ public class EditGroupView extends JPanel implements ActionListener {
         expandCollapseBtn.setBorderPainted(false);
         expandCollapseBtn.setContentAreaFilled(false);
         expandCollapseBtn.setMargin(new Insets(0, 0, 0, 0));
+        expandCollapseBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // if this is expanded, collapse it
+                if (parentView.getCurrentlyFocusedGroup() == getGroupIndex())
+                    collapseEditList();
+                else
+                    expandEditList(); 
+            }
+        });
 
         // We wrap in another JPanel so we can align to the right
         JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT,0, 0));
@@ -242,9 +279,26 @@ public class EditGroupView extends JPanel implements ActionListener {
 
         JButton undoBtn = new JButton("Undo");
         undoBtn.setBackground(Color.WHITE);
+        undoBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int indexToUndo = editList.getSelectedIndex();
+                if (indexToUndo == -1)
+                    indexToUndo = listModel.size()-1; // if no selection, default to last item
+
+                controller.undoEdit(groupIndex, indexToUndo);
+            }
+        });
 
         JButton undoAllBtn = new JButton("Undo All");
         undoAllBtn.setBackground(Color.WHITE);
+        undoAllBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.undoGroupEdits(groupIndex);
+            }
+        });
 
         bottomPanel.add(undoBtn);
         bottomPanel.add(undoAllBtn);
@@ -265,7 +319,7 @@ public class EditGroupView extends JPanel implements ActionListener {
     private int showConfirmDialog(String message) {
 
         int dialogResult = JOptionPane.showConfirmDialog (
-                null, 
+                parentView, 
                 message,
                 "TESU",
                 JOptionPane.YES_NO_OPTION,

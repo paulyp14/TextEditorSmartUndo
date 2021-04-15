@@ -15,7 +15,7 @@ public class TextBoxView extends JTextArea {
     /**
      * Default construtor
      */
-    TextBoxView() { 
+    public TextBoxView() { 
 
         // Characters beyond JTextArea's width will wrap to new line
         this.setLineWrap(true);

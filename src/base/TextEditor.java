@@ -1,7 +1,10 @@
-package base.view;
+package base;
+
+import base.view.*;
+import base.model.*;
+import base.controller.*;
 
 import javax.swing.JFrame;
-
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 
@@ -40,27 +43,20 @@ public class TextEditor {
      */
     private void init() {
 
-        // Set up Models
-
         // Set up Views
         frame = new JFrame("TESU");
         menu = new MenuBarView();
         tbox = new TextBoxView();
         undoPanel = new UndoPanelView(SIZE_HEIGHT);
-
-        // Wrap with textarea scroll pane
-        JScrollPane tbox_scroll = new JScrollPane (
-            tbox, 
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-        );
-
-        frame.getContentPane().add(BorderLayout.NORTH, menu);
-        frame.getContentPane().add(BorderLayout.CENTER, tbox_scroll);
-        frame.getContentPane().add(BorderLayout.LINE_START, undoPanel);
-
+        setupFrameComponents();
 
         // Set up Controllers
+        // textbox
+        UndoPanelController undoPanelController = new UndoPanelController(undoPanel);
+        MenuBarController menuBarController = new MenuBarController(menu, undoPanelController);
+
+        undoPanel.setController(undoPanelController);
+        menu.setController(menuBarController);
     }
 
     /**
@@ -83,5 +79,26 @@ public class TextEditor {
 
     public UndoPanelView getUndoPanelView() {
         return undoPanel;
+    }
+
+    private void setupFrameComponents() {
+
+        // Wrap with textarea scroll pane
+        JScrollPane tbox_scroll = new JScrollPane (
+            tbox, 
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+
+        // Wrap with textarea scroll pane
+        // JScrollPane undoPanel_scroll = new JScrollPane (
+        //     undoPanel, 
+        //     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+        //     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        // );
+
+        frame.getContentPane().add(BorderLayout.NORTH, menu);
+        frame.getContentPane().add(BorderLayout.CENTER, tbox_scroll);
+        frame.getContentPane().add(BorderLayout.LINE_START, undoPanel);
     }
 }

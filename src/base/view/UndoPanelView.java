@@ -1,6 +1,10 @@
 package base.view;
 
+import base.controller.*;
+
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -16,20 +20,20 @@ import java.awt.Color;
  */
 public class UndoPanelView extends JPanel {
     
-    //private UndoPanelController controller
+    private UndoPanelController controller;
     private ArrayList<EditGroupView> editGroupViews;
     private int curFocusedGroup = -1;
     private JButton newGroupBtn;
 
     private final int SIZE_WIDTH = 200;
-    private final int GROUP_SIZE_MAX = 10;
+    private final int GROUP_SIZE_MAX = 7;
+
 
     /**
-     * Default constructor
+     * Constructor
+     * @param height of the app
      */
-    UndoPanelView() {}
-
-    UndoPanelView(int height) {
+    public UndoPanelView(int height) {
 
         editGroupViews = new ArrayList<EditGroupView>();
 
@@ -42,15 +46,28 @@ public class UndoPanelView extends JPanel {
         newGroupBtn.setBackground(Color.WHITE);
         newGroupBtn.setFont(new Font("Arial", Font.BOLD, 15));
         add(newGroupBtn);
+
+        newGroupBtn.addActionListener(new ActionListener() {            //Handles NewGroup creation
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                int groupIndex = editGroupViews.size();
+                controller.addNewGroup(groupIndex);
+            }
+        });
     }
 
 
     //**********    PUBLIC  METHODS   **********//
 
-
-    // public void setController(UndoPanelController controller) {
-    //     this.controller = controller;
-    // }
+    
+    /**
+     * Set undo panel controller reference.
+     * @param controller
+     */
+    public void setController(UndoPanelController controller) {
+        this.controller = controller;
+    }
 
     /**
      * Total number of edit groups
@@ -58,6 +75,14 @@ public class UndoPanelView extends JPanel {
      */
     public int getNumOfEditGroups() {
         return editGroupViews.size();
+    }
+
+    /**
+     * Returns boolean if we reached the limit # of edit groups
+     * @return
+     */
+    public boolean hasSpaceForNewGroup() {
+        return (editGroupViews.size() < GROUP_SIZE_MAX);
     }
 
     /**
@@ -69,7 +94,8 @@ public class UndoPanelView extends JPanel {
     }
 
     /**
-     * Returns the edit group currently focused/expanded
+     * Returns the edit group currently focused/expanded. Returns 
+     * -1 if there are no currently focused edit group.
      * @return
      */
     public int getCurrentlyFocusedGroup() {
@@ -91,7 +117,7 @@ public class UndoPanelView extends JPanel {
 
         // Create a new EditGroupView
         int groupIndex = editGroupViews.size();
-        EditGroupView newEditGroup = new EditGroupView(this, groupIndex, SIZE_WIDTH);
+        EditGroupView newEditGroup = new EditGroupView(this, controller, groupIndex, SIZE_WIDTH);
         editGroupViews.add(newEditGroup);
         editGroupViews.get(groupIndex).expandEditList();
 
@@ -100,6 +126,11 @@ public class UndoPanelView extends JPanel {
         add(newEditGroup);
         add(newGroupBtn);
 
+        // remove "New Group" button if reach limit
+        if (editGroupViews.size() >= GROUP_SIZE_MAX)
+            remove(newGroupBtn);
+
+        updateUI(); //Fixes issue with double clicking NewGroup, this updates the interface everytime NewGroup is clicked
         return true;
     }
     
@@ -117,7 +148,13 @@ public class UndoPanelView extends JPanel {
             return false;
         }
 
-        onCollapseEditGroup();                  // reset group being focused
+        // reset group being focused
+        if (index == curFocusedGroup)
+            onCollapseEditGroup();
+        else // or move current focused group index down if its index is above deleted index
+        if (index < curFocusedGroup) 
+            curFocusedGroup--;
+
         this.remove(editGroupViews.get(index)); // remove ui component
         editGroupViews.remove(index);           // remove from list
 
@@ -128,6 +165,11 @@ public class UndoPanelView extends JPanel {
 
         // TODO remove edit from text box
 
+        // re-add "New Group" button if under limit
+        if (editGroupViews.size() < 7 && newGroupBtn.getParent() != this)
+            add(newGroupBtn);
+
+        updateUI();
         return true;
     }
 

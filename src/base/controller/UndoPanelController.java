@@ -3,89 +3,158 @@ package base.controller;
 import base.model.*;
 import base.view.*;
 import java.util.*;
-/**
- * ADD COMMMENTS
- * @author iann9
+
+/**  
+ * @author Ian Ngaruiya Njoroge, Thanh Tung Nguyen
  */
 public class UndoPanelController implements ControllerInterface
 {
-    private View undoPanelView; //type:UndoPanelView
-    private GroupContainer  groupContainer;
+    private UndoPanelView undoPanelView; 
+    private GroupContainer groupContainer;
+    private EditContainer editContainer;
 
-    public UndoPanelController(View undoPanelView, GroupContainer  groupContainer)
+    public UndoPanelController(UndoPanelView undoPanelView)
     {
         this.undoPanelView = undoPanelView;
-        this.groupContainer = groupContainer;
+        this.groupContainer = GroupContainer.getContainer();
+        this.editContainer = EditContainer.getContainer();
     }
 
     @Override
-    public void addNewEdit(int groupIndex)
+    public void addNewEdit(int groupIndex, String text, int editIndex, boolean isAddition)
     {
-        //Add buttonlistener?
         String groupName = String.valueOf(groupIndex);
-        ArrayList<Integer> addItem = new ArrayList<>();
-        Random rand = new Random();
-        int randomEditNumber = rand.nextInt(9999999);
         
-        addItem.add(randomEditNumber); //maybe something other than random numbers
+        editContainer.create(text,editIndex, isAddition);
+        int newItemId = editContainer.mostRecentEdit().getId();
         
-        groupContainer.add(groupName, addItem);
+        groupContainer.add(groupName, newItemId);
         groupContainer.update();
+
+        // TODO use undopanelview
     }
 
     @Override
-    public void addNewGroup()
-    {
-        Random rand = new Random();
-        int randomGroupNumber = rand.nextInt(9999999);
-        //Add buttonlistener?
-        String groupName = String.valueOf(randomGroupNumber);
+    public void addNewGroup(int groupIndex)
+    {        
+        String groupName = String.valueOf(groupIndex);
         
-        groupContainer.create(groupName);
-        groupContainer.update();//Maybe in updateView?
+        groupContainer.create(groupName);//groupName
+        groupContainer.update();
+        
+        undoPanelView.createNewGroup();
     }
 
     @Override
     public void undoEdit(int groupIndex, int editIndex)
     {
-        //Add buttonlistener?
+        ArrayList<Integer> undoItem = new ArrayList<>();
+        undoItem.add(editIndex);
         
+        String groupName = String.valueOf(groupIndex);
+        
+        groupContainer.undoEditsInGroup(groupName, undoItem);
+        groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(editIndex);
     }
 
     @Override
     public void undoGroupEdits(int groupIndex)
     {
-        //Add buttonlistener?
-        
         String groupName = String.valueOf(groupIndex);
         groupContainer.undoGroup(groupName);
-        groupContainer.update();//Maybe in updateView?
+        groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoAllEdits();
     }
 
     @Override
     public void deleteGroup(int groupIndex)
-    {
-        //Add buttonlistener? 
+    {        
         String groupName = String.valueOf(groupIndex);
         groupContainer.removeAndDeleteGroup(groupName);
-        groupContainer.update();//Maybe in updateView?
+        groupContainer.update();
+        
+        undoPanelView.deleteEditGroup(groupIndex);
     }
 
     @Override
-    public void updateView()
-    {
-        
-    }
-	
-    @Override
     public void deleteRandomEdits(int groupIndex)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Integer> editIndexes = new ArrayList<>();
+        Random rand = new Random();
+
+        String groupName = String.valueOf(groupIndex);
+        int minInclude = 0;
+        int maxInclude = groupContainer.viewEditsInGroup(groupName).size() - 1;
+        // if above is returning bad values, use:
+        // int maxInclude = undoPanelView.getEditGroupViews().get(groupIndex).getListModel().getSize() - 1; 
+        
+        int randIndex = rand.nextInt(maxInclude - minInclude + 1) + minInclude;
+        editIndexes.add(randIndex);
+        
+        groupContainer.undoEditsInGroup(groupName, editIndexes);
+        groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(randIndex);
+
+        // for(int i = 0; i < undoPanelView.getEditGroupViews().size(); i++) {
+        //     System.out.print("remaining: " + undoPanelView.getEditGroupViews().get(i).getGroupIndex());
+        // }
     }
 
     @Override
     public void deleteAllGroups()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int curSize = undoPanelView.getEditGroupViews().size();
+        String groupName;
+        
+        for(int i = 0; i < curSize; i++)
+        {
+            groupName = String.valueOf(i);
+            //Deletes all groups provided that their index is numbered between 1 and the max amount of groups
+            groupContainer.removeAndDeleteGroup(groupName); 
+            groupContainer.update();
+
+            undoPanelView.deleteEditGroup(0); // our index is 0 because deleting an edit group will push all index down
+        }
+    }
+
+    @Override
+    public void updateView()
+    {
+    }
+    
+    /*
+        ACCESSORS AND MUTATORS
+    */
+    public UndoPanelView getUndoPanelView()
+    {
+        return undoPanelView;
+    }
+
+    public void setUndoPanelView(UndoPanelView undoPanelView)
+    {
+        this.undoPanelView = undoPanelView;
+    }
+
+    public GroupContainer getGroupContainer()
+    {
+        return groupContainer;
+    }
+
+    public void setGroupContainer(GroupContainer groupContainer)
+    {
+        this.groupContainer = groupContainer;
+    }
+    
+    public EditContainer getEditContainer()
+    {
+    	return this.editContainer;
+    }
+    public void setEditContainer(EditContainer editC)
+    {
+    	this.editContainer=editC;
     }
 }
