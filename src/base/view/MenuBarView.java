@@ -2,6 +2,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * View class that manages the user interface of 
@@ -35,6 +37,47 @@ public class MenuBarView extends JMenuBar {
         menuEdit.add(menuItem_deleteAllGroup);
 
         // TODO add actionlistener
+
+        menuItem_quit.addActionListener(new ActionListener() {               //Handles Menu Item "Quit"
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(showConfirmDialog("Are you sure you want to Quit?") == 0){
+                    System.exit(0);
+                }
+            }
+        });
+
+        menuItem_newGroup.addActionListener(new ActionListener() {           //Handles creation of a New Group for Edits
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call createNewGroup()  use controller here
+            }
+        });
+
+        menuItem_arbitrary.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call controller here to deal with arbitrary undo
+            }
+        });
+
+        menuItem_deleteGroup.addActionListener(new ActionListener() {           //Handles deletion of an Edit Group
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(showConfirmDialog("Are you sure you want to delete this edit group?") == 0){
+                    // Use Controller here to deleteEditGroup()
+                }
+            }
+        });
+
+        menuItem_deleteAllGroup.addActionListener(new ActionListener() {        //Handles deletion of ALL Edit Groups
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(showConfirmDialog("Are you sure you want to delete all Edit Groups") == 0){
+                   // Use Controller here to call deleteAllEditGroup()
+                }
+            }
+        });
 
         this.add(menuFile);
         this.add(menuEdit);

@@ -1,4 +1,6 @@
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -43,7 +45,16 @@ public class UndoPanelView extends JPanel {
         newGroupBtn.setBackground(Color.WHITE);
         newGroupBtn.setFont(new Font("Arial", Font.BOLD, 15));
         add(newGroupBtn);
+
+        newGroupBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewGroup();
+            }
+        });
     }
+
+
 
 
     //**********    PUBLIC  METHODS   **********//
