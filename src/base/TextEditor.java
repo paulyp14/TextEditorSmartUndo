@@ -51,12 +51,13 @@ public class TextEditor {
         setupFrameComponents();
 
         // Set up Controllers
-        // textbox
         UndoPanelController undoPanelController = new UndoPanelController(undoPanel);
         MenuBarController menuBarController = new MenuBarController(menu, undoPanelController);
+        // TextBoxController textBoxController = new TextBoxController(tbox, ...?);
 
         undoPanel.setController(undoPanelController);
         menu.setController(menuBarController);
+        // tbox.setController(textBoxController);
     }
 
     /**
