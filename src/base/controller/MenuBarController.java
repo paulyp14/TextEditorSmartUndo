@@ -1,26 +1,27 @@
 package base.controller;
 
-import base.model.GroupContainer;
+import base.model.*;
 
 public class MenuBarController implements ControllerInterface {
 	
     private UndoPanelController undoPanel;
-    public MenuBarController(View undoPanelView, GroupContainer  groupContainer)
+    public MenuBarController(View undoPanelView, GroupContainer  groupContainer, EditContainer editC)
     {
     	undoPanel.setUndoPanelView(undoPanelView);
     	undoPanel.setGroupContainer(groupContainer);
+    	undoPanel.setEditContainer(editC);
     }
 	
 	@Override
-	public void addNewEdit(int groupIndex) {
+	public void addNewEdit(int groupIndex, String text, int editIndex, boolean isAddition) {
 		// TODO Auto-generated method stub
-		undoPanel.addNewEdit(groupIndex);
+		undoPanel.addNewEdit(groupIndex,text,editIndex,isAddition);
 	}
 
 	@Override
-	public void addNewGroup() {
+	public void addNewGroup(int groupIndex) {
 		// TODO Auto-generated method stub
-		undoPanel.addNewGroup();
+		undoPanel.addNewGroup(groupIndex);
 	}
 
 	@Override
