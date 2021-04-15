@@ -51,15 +51,6 @@ public class EditGroupView extends JPanel implements ActionListener {
         setEditList();
         setBottomPanel();
         add(new JSeparator());
-
-        listModel.addElement("1");
-        listModel.addElement("2");
-        listModel.addElement("3");
-        listModel.addElement("4");
-        listModel.addElement("5");
-        listModel.addElement("6");
-        listModel.addElement("7");
-        listModel.addElement("8");
     }
 
 
