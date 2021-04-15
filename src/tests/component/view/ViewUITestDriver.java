@@ -3,6 +3,7 @@ package tests.component.view;
 import javax.swing.DefaultListModel;
 
 import base.view.*;
+import base.*;
 
 /**
  * Runs the driver that will test the UI interactivities.

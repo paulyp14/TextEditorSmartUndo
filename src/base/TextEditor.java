@@ -1,7 +1,10 @@
-package base.view;
+package base;
+
+import base.view.*;
+import base.model.*;
+import base.controller.*;
 
 import javax.swing.JFrame;
-
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 

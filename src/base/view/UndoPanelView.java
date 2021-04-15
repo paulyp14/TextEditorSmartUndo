@@ -29,9 +29,9 @@ public class UndoPanelView extends JPanel {
     /**
      * Default constructor
      */
-    UndoPanelView() {}
+    public UndoPanelView() {}
 
-    UndoPanelView(int height) {
+    public UndoPanelView(int height) {
 
         editGroupViews = new ArrayList<EditGroupView>();
 

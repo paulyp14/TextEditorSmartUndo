@@ -20,7 +20,7 @@ public class MenuBarView extends JMenuBar {
     /**
      * Default constructor.
      */
-    MenuBarView() {
+    public MenuBarView() {
 
         JMenu menuFile = new JMenu("File");
         JMenuItem menuItem_new  = new JMenuItem("New");
