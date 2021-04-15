@@ -3,39 +3,140 @@ package base.controller;
 import base.model.*;
 import base.view.*;
 import java.util.*;
-/**
- * ADD COMMMENTS
- * @author iann9
+/**  
+ * @author Ian Ngaruiya Njoroge
  */
 public class UndoPanelController implements ControllerInterface
 {
-    private View undoPanelView; //type:UndoPanelView
+    private UndoPanelView undoPanelView; 
     private GroupContainer  groupContainer;
-    private EditContainer	editContainer;
+    private EditContainer editContainer;
 
-    public UndoPanelController(View undoPanelView, GroupContainer  groupContainer, EditContainer editC)
+    public UndoPanelController(UndoPanelView undoPanelView, GroupContainer  groupContainer, EditContainer editC)
     {
         this.undoPanelView = undoPanelView;
         this.groupContainer = groupContainer;
         this.editContainer = editC;
     }
-	
-    public View getUndoPanelView()
+
+    @Override
+    public void addNewEdit(int groupIndex, String text, int editIndex, boolean isAddition)
     {
-    	return this.undoPanelView;
+        String groupName = String.valueOf(groupIndex);
+        
+        editContainer.create(text,editIndex, isAddition);
+        int newItemId = editContainer.mostRecentEdit().getId();
+        
+        groupContainer.add(groupName, newItemId);
+        groupContainer.update();
     }
+
+    @Override
+    public void addNewGroup(int groupIndex)
+    {        
+        String groupName = String.valueOf(groupIndex);
+        
+        groupContainer.create(groupName);//groupName
+        groupContainer.update();
+    }
+
+    @Override
+    public void undoEdit(int groupIndex, int editIndex)
+    {
+        ArrayList<Integer> undoItem = new ArrayList<>();
+        undoItem.add(editIndex);
+        
+        String groupName = String.valueOf(groupIndex);
+        
+        groupContainer.undoEditsInGroup(groupName, undoItem);
+        groupContainer.update();
+    }
+
+    @Override
+    public void undoGroupEdits(int groupIndex)
+    {
+        String groupName = String.valueOf(groupIndex);
+        groupContainer.undoGroup(groupName);
+        groupContainer.update();
+    }
+
+    @Override
+    public void deleteGroup(int groupIndex)
+    {        
+        String groupName = String.valueOf(groupIndex);
+        groupContainer.removeAndDeleteGroup(groupName);
+        groupContainer.update();
+    }
+
+    @Override
+    public void deleteRandomEdits(int groupIndex)
+    {
+        Random rand = new Random();
+        
+        ArrayList<Integer> editIds = new ArrayList<>();
+        String groupName = String.valueOf(groupIndex);
+        
+        int numOfEdits = groupContainer.viewEditsInGroup(groupName).size();
+        int flip;
+        
+        //Randomly adds edits to be removed based on their index
+        for(int i = 0; i < numOfEdits; i++)
+        {
+            flip =  rand.nextInt(2);
+            
+            if(flip == 1)
+                editIds.add(i);
+        }
+        
+        groupContainer.undoEditsInGroup(groupName, editIds);
+        groupContainer.update();
+    }
+
+    @Override
+    public void deleteAllGroups()
+    {
+        int maxSize = 10;
+        String groupName;
+        
+        for(int i = 1; i <= maxSize; i++)
+        {
+            groupName = String.valueOf(i);
+            //Deletes all groups provided that their index is numbered between 1 and the max amount of groups
+            groupContainer.removeAndDeleteGroup(groupName); 
+        }
+        
+        groupContainer.update();
+    }
+
+    @Override
+    public void updateView()
+    {
+        //undoPanelView
+    }
+    
+    /*
+        ACCESSORS AND MUTATORS
+    */
+    public UndoPanelView getUndoPanelView()
+    {
+        return undoPanelView;
+    }
+
+    public void setUndoPanelView(UndoPanelView undoPanelView)
+    {
+        this.undoPanelView = undoPanelView;
+    }
+
     public GroupContainer getGroupContainer()
     {
-    	return this.groupContainer;
+        return groupContainer;
     }
-    public void setUndoPanelView(View undoPan)
+
+    public void setGroupContainer(GroupContainer groupContainer)
     {
-    	this.undoPanelView=undoPan;
+        this.groupContainer = groupContainer;
     }
-    public void setGroupContainer(GroupContainer groupC)
-    {
-    	this.groupContainer = groupC;
-    }
+    
     public EditContainer getEditContainer()
     {
     	return this.editContainer;
@@ -43,59 +144,5 @@ public class UndoPanelController implements ControllerInterface
     public void setEditContainer(EditContainer editC)
     {
     	this.editContainer=editC;
-    }
-    @Override
-    public void addNewEdit(String text,int editIndex, boolean isAddition)
-    {
-       editContainer.create(text,editIndex, isAddition);
-    }
-    @Override
-    public void addNewGroup(int groupIndex, int editIndex)
-    {
-        String groupName = String.valueOf(groupIndex);
-        groupContainer.add(groupName, editIndex);
-    }
-
-    @Override
-    public void undoEdit(int groupIndex, int editIndex)
-    {
-        editContainer.undo();
-    }
-
-    @Override
-    public void undoGroupEdits(int groupIndex)
-    {
-        //Add buttonlistener?
-        
-        String groupName = String.valueOf(groupIndex);
-        groupContainer.undoGroup(groupName);
-        groupContainer.update();//Maybe in updateView?
-    }
-
-    @Override
-    public void deleteGroup(int groupIndex)
-    {
-        //Add buttonlistener? 
-        String groupName = String.valueOf(groupIndex);
-        groupContainer.removeAndDeleteGroup(groupName);
-        groupContainer.update();//Maybe in updateView?
-    }
-
-    @Override
-    public void updateView()
-    {
-        
-    }
-	
-    @Override
-    public void deleteRandomEdits(int groupIndex)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void deleteAllGroups()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
