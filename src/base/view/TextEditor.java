@@ -1,3 +1,5 @@
+package base.view;
+
 import javax.swing.JFrame;
 
 import java.awt.BorderLayout;
@@ -13,6 +15,10 @@ public class TextEditor {
     private JFrame frame;
     private final int SIZE_WIDTH = 860;
     private final int SIZE_HEIGHT = 600;
+
+    private MenuBarView menu;
+    private TextBoxView tbox;
+    private UndoPanelView undoPanel;
 
     /**
      * Default constructor
@@ -38,9 +44,9 @@ public class TextEditor {
 
         // Set up Views
         frame = new JFrame("TESU");
-        MenuBarView menu = new MenuBarView();
-        TextBoxView tbox = new TextBoxView();
-        UndoPanelView undoPanel = new UndoPanelView(SIZE_HEIGHT);
+        menu = new MenuBarView();
+        tbox = new TextBoxView();
+        undoPanel = new UndoPanelView(SIZE_HEIGHT);
 
         // Wrap with textarea scroll pane
         JScrollPane tbox_scroll = new JScrollPane (
@@ -65,5 +71,17 @@ public class TextEditor {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(SIZE_WIDTH, SIZE_HEIGHT);
         frame.setResizable(false);
+    }
+
+    public MenuBarView getMenuBarView() {
+        return menu;
+    }
+
+    public TextBoxView getTextBoxView() {
+        return tbox;
+    }
+
+    public UndoPanelView getUndoPanelView() {
+        return undoPanel;
     }
 }
