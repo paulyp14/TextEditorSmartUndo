@@ -1,62 +1,54 @@
 package base.controller;
 
-import base.model.GroupContainer;
+import base.view.MenuBarView;
 
+/**
+ * @author Duc Minh Bui, Thanh Tung Nguyen
+ */
 public class MenuBarController implements ControllerInterface {
 	
-    private UndoPanelController undoPanel;
-    public MenuBarController(View undoPanelView, GroupContainer  groupContainer)
+	private MenuBarView menuBarView;
+    private UndoPanelController undoPanelController;
+
+    public MenuBarController(MenuBarView menuBarView, UndoPanelController undoPanel)
     {
-    	undoPanel.setUndoPanelView(undoPanelView);
-    	undoPanel.setGroupContainer(groupContainer);
+		this.menuBarView = menuBarView;	
+		this.undoPanelController = undoPanel;
     }
-	
-	@Override
-	public void addNewEdit(int groupIndex) {
-		// TODO Auto-generated method stub
-		undoPanel.addNewEdit(groupIndex);
-	}
 
 	@Override
-	public void addNewGroup() {
-		// TODO Auto-generated method stub
-		undoPanel.addNewGroup();
-	}
-
-	@Override
-	public void undoEdit(int groupIndex, int editIndex) {
-		// TODO Auto-generated method stub
-		undoPanel.undoEdit(groupIndex, editIndex);
-	}
-
-	@Override
-	public void undoGroupEdits(int groupIndex) {
-		// TODO Auto-generated method stub
-		undoPanel.undoGroupEdits(groupIndex);
+	public void addNewGroup(int groupIndex) {
+		undoPanelController.addNewGroup(groupIndex);
 	}
 
 	@Override
 	public void deleteRandomEdits(int groupIndex) {
-		// TODO Auto-generated method stub
-		undoPanel.deleteRandomEdits(groupIndex);
+		undoPanelController.deleteRandomEdits(groupIndex);
 	}
 
 	@Override
 	public void deleteGroup(int groupIndex) {
-		// TODO Auto-generated method stub
-		undoPanel.deleteGroup(groupIndex);
+		undoPanelController.deleteGroup(groupIndex);
 	}
 
 	@Override
 	public void deleteAllGroups() {
-		// TODO Auto-generated method stub
-		undoPanel.deleteAllGroups();
+		undoPanelController.deleteAllGroups();
 	}
 
 	@Override
-	public void updateView() {
-		// TODO Auto-generated method stub
-		undoPanel.updateView();
-	}
+	public void addNewEdit(int groupIndex, String text, int editIndex, boolean isAddition) { }
+	
+	@Override
+	public void undoEdit(int groupIndex, int editIndex) { }
 
+	@Override
+	public void undoGroupEdits(int groupIndex) { }
+
+	@Override
+	public void updateView() { }
+
+	public UndoPanelController getUndoPanelController() {
+		return undoPanelController;
+	}
 }

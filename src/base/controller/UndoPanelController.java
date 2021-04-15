@@ -4,9 +4,8 @@ import base.model.*;
 import base.view.*;
 import java.util.*;
 
-import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
 /**  
- * @author Ian Ngaruiya Njoroge
+ * @author Ian Ngaruiya Njoroge, Thanh Tung Nguyen
  */
 public class UndoPanelController implements ControllerInterface
 {
@@ -31,6 +30,8 @@ public class UndoPanelController implements ControllerInterface
         
         groupContainer.add(groupName, newItemId);
         groupContainer.update();
+
+        // TODO use undopanelview
     }
 
     @Override
@@ -81,42 +82,43 @@ public class UndoPanelController implements ControllerInterface
     @Override
     public void deleteRandomEdits(int groupIndex)
     {
+        ArrayList<Integer> editIndexes = new ArrayList<>();
         Random rand = new Random();
-        
-        ArrayList<Integer> editIds = new ArrayList<>();
+
         String groupName = String.valueOf(groupIndex);
+        int minInclude = 0;
+        int maxInclude = groupContainer.viewEditsInGroup(groupName).size() - 1;
+        // if above is returning bad values, use:
+        // int maxInclude = undoPanelView.getEditGroupViews().get(groupIndex).getListModel().getSize() - 1; 
         
-        int numOfEdits = groupContainer.viewEditsInGroup(groupName).size();
-        int flip;
+        int randIndex = rand.nextInt(maxInclude - minInclude + 1) + minInclude;
+        editIndexes.add(randIndex);
         
-        //Randomly adds edits to be removed based on their index
-        for(int i = 0; i < numOfEdits; i++)
-        {
-            flip =  rand.nextInt(2);
-            
-            if(flip == 1)
-                editIds.add(i);
-        }
-        
-        groupContainer.undoEditsInGroup(groupName, editIds);
+        groupContainer.undoEditsInGroup(groupName, editIndexes);
         groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(randIndex);
+
+        // for(int i = 0; i < undoPanelView.getEditGroupViews().size(); i++) {
+        //     System.out.print("remaining: " + undoPanelView.getEditGroupViews().get(i).getGroupIndex());
+        // }
     }
 
     @Override
     public void deleteAllGroups()
     {
-        int maxSize = 10;
+        int curSize = undoPanelView.getEditGroupViews().size();
         String groupName;
         
-        for(int i = 1; i <= maxSize; i++)
+        for(int i = 0; i < curSize; i++)
         {
             groupName = String.valueOf(i);
             //Deletes all groups provided that their index is numbered between 1 and the max amount of groups
             groupContainer.removeAndDeleteGroup(groupName); 
-            undoPanelView.deleteEditGroup(i);
+            groupContainer.update();
+
+            undoPanelView.deleteEditGroup(0); // our index is 0 because deleting an edit group will push all index down
         }
-        
-        groupContainer.update();
     }
 
     @Override

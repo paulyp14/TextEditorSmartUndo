@@ -78,6 +78,14 @@ public class UndoPanelView extends JPanel {
     }
 
     /**
+     * Returns boolean if we reached the limit # of edit groups
+     * @return
+     */
+    public boolean hasSpaceForNewGroup() {
+        return (editGroupViews.size() < GROUP_SIZE_MAX);
+    }
+
+    /**
      * Returns all edit group views
      * @return
      */
@@ -86,7 +94,8 @@ public class UndoPanelView extends JPanel {
     }
 
     /**
-     * Returns the edit group currently focused/expanded
+     * Returns the edit group currently focused/expanded. Returns 
+     * -1 if there are no currently focused edit group.
      * @return
      */
     public int getCurrentlyFocusedGroup() {

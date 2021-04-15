@@ -1,5 +1,7 @@
 package base.view;
 
+import base.controller.*;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -15,7 +17,7 @@ import java.awt.event.ActionListener;
  */
 public class MenuBarView extends JMenuBar {
     
-    //private MenuBarController controller
+    private MenuBarController controller;
 
     /**
      * Default constructor.
@@ -38,7 +40,6 @@ public class MenuBarView extends JMenuBar {
         menuEdit.add(menuItem_deleteGroup);
         menuEdit.add(menuItem_deleteAllGroup);
 
-        // TODO add actionlistener
 
         menuItem_quit.addActionListener(new ActionListener() {               //Handles Menu Item "Quit"
             @Override
@@ -49,40 +50,64 @@ public class MenuBarView extends JMenuBar {
             }
         });
 
-        menuItem_newGroup.addActionListener(new ActionListener() {           //Handles creation of a New Group for Edits
+        menuItem_new.addActionListener(new ActionListener() {               //Handles Menu Item "Quit"
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Call createNewGroup()  use controller here
-               /* UndoPanelView upv = new UndoPanelView(){
-                    @Override
-                    public boolean createNewGroup() {
-                        return super.createNewGroup();
-                    }
-                };*/
+                if(showConfirmDialog("Are you sure you want to create new?") == 0){
+                    controller.deleteAllGroups();
+                    // TODO clear textbox too
+                }
+            }
+        });
+
+        menuItem_newGroup.addActionListener(new ActionListener() {           //Handles creation of a New Group for Edits
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                UndoPanelView undoPanelViewRef = controller.getUndoPanelController().getUndoPanelView();
+
+                // we make a new group if we didn't reach maximum # of groups
+                if (undoPanelViewRef.hasSpaceForNewGroup()) {
+                    controller.addNewGroup(undoPanelViewRef.getEditGroupViews().size());
+                }
             }
         });
 
         menuItem_arbitrary.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Call controller here to deal with arbitrary undo
+                UndoPanelView undoPanelViewRef = controller.getUndoPanelController().getUndoPanelView();
+                int focusedGroupIndex = undoPanelViewRef.getCurrentlyFocusedGroup();
+                int numEditsInGroup = undoPanelViewRef.getEditGroupViews().get(focusedGroupIndex).getListModel().size();
+
+                if (focusedGroupIndex != -1 && numEditsInGroup > 0)
+                     controller.deleteRandomEdits(focusedGroupIndex);
+                else
+                    showMessageDialog("Please select a group edit first.");
             }
         });
 
         menuItem_deleteGroup.addActionListener(new ActionListener() {           //Handles deletion of an Edit Group
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(showConfirmDialog("Are you sure you want to delete this edit group?") == 0){
-                    // Use Controller here to deleteEditGroup()
+                UndoPanelView undoPanelViewRef = controller.getUndoPanelController().getUndoPanelView();
+                int focusedGroupIndex = undoPanelViewRef.getCurrentlyFocusedGroup();
+
+                if (focusedGroupIndex != -1) {
+                    if(showConfirmDialog("Are you sure you want to delete this edit group?") == 0){
+                        controller.deleteGroup(focusedGroupIndex);
+                    }
                 }
+                else
+                    showMessageDialog("Please select a group edit first.");
             }
         });
 
         menuItem_deleteAllGroup.addActionListener(new ActionListener() {        //Handles deletion of ALL Edit Groups
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(showConfirmDialog("Are you sure you want to delete all Edit Groups") == 0){
-                   // Use Controller here to call deleteAllEditGroup()
+                if(showConfirmDialog("Are you sure you want to delete all Edit Groups?") == 0){
+                    controller.deleteAllGroups();
                 }
             }
         });
@@ -94,9 +119,13 @@ public class MenuBarView extends JMenuBar {
     
     //**********    PUBLIC  METHODS   **********//
 
-    // public void setController(MenuBarController controller) {
-    //     this.controller = controller;
-    // }
+    /**
+     * Set MenuBarController.
+     * @param controller
+     */
+    public void setController(MenuBarController controller) {
+        this.controller = controller;
+    }
 
 
     //**********    PRIVATE METHODS   **********//
@@ -111,7 +140,7 @@ public class MenuBarView extends JMenuBar {
     private int showConfirmDialog(String message) { 
 
         int dialogResult = JOptionPane.showConfirmDialog (
-                null, 
+                this, 
                 message,
                 "TESU",
                 JOptionPane.YES_NO_OPTION,
@@ -119,5 +148,20 @@ public class MenuBarView extends JMenuBar {
         );
 
         return dialogResult;
+    }
+
+    /**
+     * Show a simple message dialog box
+     * 
+     * @param str
+     */
+    private void showMessageDialog(String message) { 
+
+        JOptionPane.showMessageDialog (
+                this, 
+                message,
+                "Alert",
+                JOptionPane.WARNING_MESSAGE
+        );
     }
 }

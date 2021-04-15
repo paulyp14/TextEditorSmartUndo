@@ -58,13 +58,13 @@ public class EditGroupView extends JPanel {
         setBottomPanel();
         add(new JSeparator());
 
-        listModel.addElement("1");
-        listModel.addElement("2");
-        listModel.addElement("3");
-        listModel.addElement("4");
-        listModel.addElement("5");
-        listModel.addElement("6");
-        listModel.addElement("61");
+        // listModel.addElement("1");
+        // listModel.addElement("2");
+        // listModel.addElement("3");
+        // listModel.addElement("4");
+        // listModel.addElement("5");
+        // listModel.addElement("6");
+        // listModel.addElement("61");
     }
 
 
@@ -230,7 +230,6 @@ public class EditGroupView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // if this is expanded, collapse it
-                System.out.println(getGroupIndex());
                 if (parentView.getCurrentlyFocusedGroup() == getGroupIndex())
                     collapseEditList();
                 else

@@ -43,8 +43,6 @@ public class TextEditor {
      */
     private void init() {
 
-        // Set up Models
-
         // Set up Views
         frame = new JFrame("TESU");
         menu = new MenuBarView();
@@ -53,11 +51,12 @@ public class TextEditor {
         setupFrameComponents();
 
         // Set up Controllers
-        // menu
         // textbox
         UndoPanelController undoPanelController = new UndoPanelController(undoPanel);
+        MenuBarController menuBarController = new MenuBarController(menu, undoPanelController);
 
         undoPanel.setController(undoPanelController);
+        menu.setController(menuBarController);
     }
 
     /**
