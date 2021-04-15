@@ -46,10 +46,11 @@ public class UndoPanelView extends JPanel {
         newGroupBtn.setFont(new Font("Arial", Font.BOLD, 15));
         add(newGroupBtn);
 
-        newGroupBtn.addActionListener(new ActionListener() {
+        newGroupBtn.addActionListener(new ActionListener() {            //Handles NewGroup creation
             @Override
             public void actionPerformed(ActionEvent e) {
                 createNewGroup();
+                updateUI();              //Fixes issue with double clicking NewGroup, this updates the interface everytime NewGroup is clicked
             }
         });
     }

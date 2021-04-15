@@ -51,6 +51,12 @@ public class MenuBarView extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call createNewGroup()  use controller here
+               /* UndoPanelView upv = new UndoPanelView(){
+                    @Override
+                    public boolean createNewGroup() {
+                        return super.createNewGroup();
+                    }
+                };*/
             }
         });
 
