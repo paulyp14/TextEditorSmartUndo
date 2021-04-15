@@ -1,7 +1,6 @@
 package base.controller;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import base.model.*;
 import base.view.*;
@@ -23,7 +22,7 @@ public class TextBoxController implements ControllerInterface {
     }
     
 	@Override
-	public void addNewEdit(int groupIndex) {
+	public void addNewEdit(int groupIndex, String text,int editIndex, boolean isAddition) {
 		String groupName = String.valueOf(groupIndex);
 		
 		if (!groupContainer.groups.containsKey(groupName)) {
@@ -32,16 +31,15 @@ public class TextBoxController implements ControllerInterface {
 			return;
 		}
 		
-		// generate a random integer, there isn't a counter in editgroup?
-        Random rand = new Random();
-        int randomEditNumber = rand.nextInt(9999999);
+		groupContainer.editContainer.create(text,editIndex, isAddition);
+        int newItemId = groupContainer.editContainer.mostRecentEdit().getId();
         
-        groupContainer.add(groupName, randomEditNumber);
+        groupContainer.add(groupName, newItemId);
         groupContainer.update();
 		
 	}
 	@Override
-	public void addNewGroup() {
+	public void addNewGroup(int groupIndex) {
 		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 	@Override
