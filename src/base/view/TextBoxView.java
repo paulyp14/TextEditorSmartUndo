@@ -1,3 +1,5 @@
+package base.view;
+
 import javax.swing.JTextArea;
 
 /**
