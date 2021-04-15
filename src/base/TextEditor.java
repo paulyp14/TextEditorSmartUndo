@@ -51,9 +51,13 @@ public class TextEditor {
         tbox = new TextBoxView();
         undoPanel = new UndoPanelView(SIZE_HEIGHT);
         setupFrameComponents();
-        
 
         // Set up Controllers
+        // menu
+        // textbox
+        UndoPanelController undoPanelController = new UndoPanelController(undoPanel);
+
+        undoPanel.setController(undoPanelController);
     }
 
     /**

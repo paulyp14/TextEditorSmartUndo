@@ -1,5 +1,7 @@
 package base.view;
 
+import base.controller.*;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +20,7 @@ import java.awt.Color;
  */
 public class UndoPanelView extends JPanel {
     
-    //private UndoPanelController controller
+    private UndoPanelController controller;
     private ArrayList<EditGroupView> editGroupViews;
     private int curFocusedGroup = -1;
     private JButton newGroupBtn;
@@ -26,11 +28,11 @@ public class UndoPanelView extends JPanel {
     private final int SIZE_WIDTH = 200;
     private final int GROUP_SIZE_MAX = 7;
 
-    /**
-     * Default constructor
-     */
-    public UndoPanelView() {}
 
+    /**
+     * Constructor
+     * @param height of the app
+     */
     public UndoPanelView(int height) {
 
         editGroupViews = new ArrayList<EditGroupView>();
@@ -47,9 +49,10 @@ public class UndoPanelView extends JPanel {
 
         newGroupBtn.addActionListener(new ActionListener() {            //Handles NewGroup creation
             @Override
-            public void actionPerformed(ActionEvent e) {
-                createNewGroup();
-                updateUI();              //Fixes issue with double clicking NewGroup, this updates the interface everytime NewGroup is clicked
+            public void actionPerformed(ActionEvent e) 
+            {
+                int groupIndex = editGroupViews.size();
+                controller.addNewGroup(groupIndex);
             }
         });
     }
@@ -57,10 +60,14 @@ public class UndoPanelView extends JPanel {
 
     //**********    PUBLIC  METHODS   **********//
 
-
-    // public void setController(UndoPanelController controller) {
-    //     this.controller = controller;
-    // }
+    
+    /**
+     * Set undo panel controller reference.
+     * @param controller
+     */
+    public void setController(UndoPanelController controller) {
+        this.controller = controller;
+    }
 
     /**
      * Total number of edit groups
@@ -101,7 +108,7 @@ public class UndoPanelView extends JPanel {
 
         // Create a new EditGroupView
         int groupIndex = editGroupViews.size();
-        EditGroupView newEditGroup = new EditGroupView(this, groupIndex, SIZE_WIDTH);
+        EditGroupView newEditGroup = new EditGroupView(this, controller, groupIndex, SIZE_WIDTH);
         editGroupViews.add(newEditGroup);
         editGroupViews.get(groupIndex).expandEditList();
 
@@ -114,7 +121,7 @@ public class UndoPanelView extends JPanel {
         if (editGroupViews.size() >= GROUP_SIZE_MAX)
             remove(newGroupBtn);
 
-        updateUI();
+        updateUI(); //Fixes issue with double clicking NewGroup, this updates the interface everytime NewGroup is clicked
         return true;
     }
     
@@ -132,7 +139,13 @@ public class UndoPanelView extends JPanel {
             return false;
         }
 
-        onCollapseEditGroup();                  // reset group being focused
+        // reset group being focused
+        if (index == curFocusedGroup)
+            onCollapseEditGroup();
+        else // or move current focused group index down if its index is above deleted index
+        if (index < curFocusedGroup) 
+            curFocusedGroup--;
+
         this.remove(editGroupViews.get(index)); // remove ui component
         editGroupViews.remove(index);           // remove from list
 

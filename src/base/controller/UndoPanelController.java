@@ -3,20 +3,22 @@ package base.controller;
 import base.model.*;
 import base.view.*;
 import java.util.*;
+
+import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
 /**  
  * @author Ian Ngaruiya Njoroge
  */
 public class UndoPanelController implements ControllerInterface
 {
     private UndoPanelView undoPanelView; 
-    private GroupContainer  groupContainer;
+    private GroupContainer groupContainer;
     private EditContainer editContainer;
 
-    public UndoPanelController(UndoPanelView undoPanelView, GroupContainer  groupContainer, EditContainer editC)
+    public UndoPanelController(UndoPanelView undoPanelView)
     {
         this.undoPanelView = undoPanelView;
-        this.groupContainer = groupContainer;
-        this.editContainer = editC;
+        this.groupContainer = GroupContainer.getContainer();
+        this.editContainer = EditContainer.getContainer();
     }
 
     @Override
@@ -52,6 +54,8 @@ public class UndoPanelController implements ControllerInterface
         
         groupContainer.undoEditsInGroup(groupName, undoItem);
         groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(editIndex);
     }
 
     @Override
@@ -60,6 +64,8 @@ public class UndoPanelController implements ControllerInterface
         String groupName = String.valueOf(groupIndex);
         groupContainer.undoGroup(groupName);
         groupContainer.update();
+
+        undoPanelView.getEditGroupViews().get(groupIndex).undoAllEdits();
     }
 
     @Override
