@@ -1,3 +1,5 @@
+package base.view;
+
 /**
  * Runs the TextEditor UI.
  */

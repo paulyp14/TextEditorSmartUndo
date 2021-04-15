@@ -1,9 +1,10 @@
+package base.view;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Color;
 
@@ -21,6 +22,7 @@ public class UndoPanelView extends JPanel {
     private JButton newGroupBtn;
 
     private final int SIZE_WIDTH = 200;
+    private final int GROUP_SIZE_MAX = 10;
 
     /**
      * Default constructor
@@ -29,16 +31,13 @@ public class UndoPanelView extends JPanel {
 
     UndoPanelView(int height) {
 
+        editGroupViews = new ArrayList<EditGroupView>();
+
         this.setPreferredSize(new Dimension(SIZE_WIDTH, height));
         //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         //((FlowLayout)getLayout()).setVgap(0);
 
-        editGroupViews = new ArrayList<EditGroupView>();
-
-        // EditGroupView editGroup1 = new EditGroupView(this, 0, SIZE_WIDTH);
-        // editGroupViews.add(editGroup1);
-        // add(editGroup1);
-
+        // Button to creat a new edit group
         newGroupBtn = new JButton("New Group");
         newGroupBtn.setBackground(Color.WHITE);
         newGroupBtn.setFont(new Font("Arial", Font.BOLD, 15));
@@ -53,6 +52,29 @@ public class UndoPanelView extends JPanel {
     //     this.controller = controller;
     // }
 
+    /**
+     * Total number of edit groups
+     * @return
+     */
+    public int getNumOfEditGroups() {
+        return editGroupViews.size();
+    }
+
+    /**
+     * Returns all edit group views
+     * @return
+     */
+    public ArrayList<EditGroupView> getEditGroupViews() {
+        return editGroupViews;
+    }
+
+    /**
+     * Returns the edit group currently focused/expanded
+     * @return
+     */
+    public int getCurrentlyFocusedGroup() {
+        return curFocusedGroup;
+    }
 
     /**
      * Add a new edit group on UndoPanel and place at bottom.
@@ -62,8 +84,8 @@ public class UndoPanelView extends JPanel {
      */
     public boolean createNewGroup() {
         
-        if (editGroupViews.size()  >= 10) {
-            System.out.println("UndoPanelView.createNewGroup: Cannot exceed 10 edit groups");
+        if (editGroupViews.size() >= GROUP_SIZE_MAX) {
+            System.out.println("UndoPanelView.createNewGroup: Cannot exceed " + GROUP_SIZE_MAX + " edit groups");
             return false;
         }
 
@@ -100,7 +122,7 @@ public class UndoPanelView extends JPanel {
         editGroupViews.remove(index);           // remove from list
 
         // we move all group index down
-        for (int i = index+1; i < editGroupViews.size(); i++) {
+        for (int i = index; i < editGroupViews.size(); i++) {
             editGroupViews.get(i).moveIndexDown();
         }
 
@@ -116,6 +138,11 @@ public class UndoPanelView extends JPanel {
      * @param index
      */
     public void onExpandEditGroup(int index) {
+
+        if (index < 0 || index >= editGroupViews.size()) {
+            System.out.println("UndoPanelView.onExpandEditGroup: Index of edit group is out of range.");
+            return;
+        }
 
         // if any other edit group is expanded, collapse it before focusing on another edit group
         if (curFocusedGroup >= 0 && curFocusedGroup < editGroupViews.size()) {
