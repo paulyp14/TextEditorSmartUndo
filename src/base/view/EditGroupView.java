@@ -1,3 +1,5 @@
+package base.view;
+
 import javax.swing.*;
 import static javax.swing.ScrollPaneConstants.*;
 
@@ -46,28 +48,9 @@ public class EditGroupView extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setTopPanel();
-        //add(new JSeparator());
         setEditList();
         setBottomPanel();
         add(new JSeparator());
-
-        listModel.addElement("2");
-        listModel.addElement("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        listModel.addElement("TEST");
-        editList.ensureIndexIsVisible(listModel.getSize() - 1);
     }
 
 
@@ -75,6 +58,21 @@ public class EditGroupView extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    /**
+     * Returns group index of this group edit.
+     */
+    public int getGroupIndex() {
+        return groupIndex;
+    }
+
+    /**
+     * Returns the list of edits.
+     * @return
+     */
+    public DefaultListModel<String> getListModel() {
+        return listModel;
     }
 
     /**
@@ -86,6 +84,72 @@ public class EditGroupView extends JPanel implements ActionListener {
     }
 
     /**
+     * Add a new edit in the edit list of this group and
+     * update the Model.
+     * 
+     * @param str
+     * @return true if added new edit successfully
+     */
+    public boolean addNewEdit(String str) {
+
+        if (str == null || str == "") {
+            System.out.println("EditGroupView.addNewEdit: String is empty or null.");
+            return false;
+        }
+
+        listModel.addElement(str);
+        editList.ensureIndexIsVisible(listModel.getSize() - 1); // make sure it's scrolled down when adding new items
+
+        return true;
+    }
+
+    /**
+     * Undo an edit in the edit list of this group and 
+     * update the Model.
+     * 
+     * @param index of selected undo
+     * @return true if undo'd edit successfully
+     */
+    public boolean undoEdit(int index) {
+
+        if (index < 0 || index >= listModel.size()) {
+            
+            return false;
+        }
+        
+        if (listModel.isEmpty()) {
+            System.out.println("EditGroupView.undoEdit: no edits to undo.");
+            return false;
+        }
+            
+        listModel.remove(index);
+        return true;
+    }
+
+    /**
+     * Undo all edits in the edit list for this group and 
+     * update the Model.
+     */
+    public boolean undoAllEdits() {
+
+        if (listModel.isEmpty()) {
+            System.out.println("EditGroupView.undoEdit: no edits to undo.");
+            return false;
+        }
+            
+        listModel.clear();
+        return true;
+    }
+
+    /**
+     * Call the parent UndoPanelView to remove this 
+     * edit group component from panel.
+     */
+    public void deleteThisGroup() {
+        parentView.deleteEditGroup(groupIndex);
+    }
+
+    /**
      * Collapse this edit group and allow another group 
      * to be maximized if desired by user.
      */
@@ -93,6 +157,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(false);
         bottomPanel.setVisible(false);
 
+        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
         parentView.onCollapseEditGroup();
     }
 
@@ -104,6 +169,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(true);
         bottomPanel.setVisible(true);
 
+        expandCollapseBtn.setIcon(new ImageIcon(expandImgPath));
         parentView.onExpandEditGroup(groupIndex);
     }
 
@@ -117,9 +183,8 @@ public class EditGroupView extends JPanel implements ActionListener {
         //topPanel.setBackground(Color.LIGHT_GRAY);
         
         // Edit group name
-        JLabel groupTitle = new JLabel("Edit Group " + (groupIndex + 1), SwingConstants.LEFT);
+        JLabel groupTitle = new JLabel("Edit Group", SwingConstants.LEFT);
         groupTitle.setFont(new Font("Arial", Font.BOLD, 14));
-        
 
         // Button for delete edit group
         JButton deleteGroupBtn = new JButton();
@@ -217,59 +282,5 @@ public class EditGroupView extends JPanel implements ActionListener {
      */
     private void highlightEdit(int index) {
 
-    }
-
-    /**
-     * Add a new edit in the edit list of this group and
-     * update the Model.
-     * 
-     * @param str
-     * @return true if added new edit successfully
-     */
-    private boolean addNewEdit(String str) {
-
-        if (str == null || str == "") {
-            System.out.println("EditGroupView.addNewEdit: String is empty.");
-            return false;
-        }
-
-        listModel.addElement(str);
-        editList.ensureIndexIsVisible(listModel.getSize() - 1); // make sure it's scrolled down when adding new items
-
-        return true;
-    }
-
-    /**
-     * Undo an edit in the edit list of this group and 
-     * update the Model.
-     * 
-     * @param index of selected undo
-     * @return true if undo'd edit successfully
-     */
-    private boolean undoEdit(int index) {
-
-        if (index < 0 || index >= listModel.size()) {
-            System.out.println("EditGroupView.undoEdit: index out of range.");
-            return false;
-        }
-        
-        listModel.remove(index);
-        return true;
-    }
-
-    /**
-     * Undo all edits in the edit list for this group and 
-     * update the Model.
-     */
-    private void undoAllEdits() {
-        listModel.clear();
-    }
-
-    /**
-     * Call the parent UndoPanelView to remove this 
-     * edit group component from panel.
-     */
-    private void deleteThisGroup() {
-        parentView.deleteEditGroup(groupIndex);
     }
 }
