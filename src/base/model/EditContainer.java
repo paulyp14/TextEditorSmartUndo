@@ -255,7 +255,6 @@ public class EditContainer {
                 editString,
                 separator
         };
-        // TODO SOME FORMATTING
         return String.join("\n", components);
     }
 
@@ -323,6 +322,12 @@ public class EditContainer {
         for (int editId: editIds) {
             this.undoByIdWithoutSync(editId);
         }
+        this.sync();
+    }
+
+    public void empty() {
+        this.first = null;
+        this.last = null;
         this.sync();
     }
 }
