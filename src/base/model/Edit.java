@@ -12,10 +12,9 @@ public class Edit {
     private boolean deleted;
     private boolean isAddition;
 
-    /*
+    /* ======================================================================
         CONSTRUCTORS
      */
-
     public Edit(String text) {
         this(text, true);
     }
@@ -58,10 +57,14 @@ public class Edit {
         return Edit.nextId++;
     }
 
-    /*
+    /* =============================================================================
         ACCESSORS
      */
 
+    /**
+     * Returns the text of the edit
+     * @return
+     */
     public String asText() {
         if (this.isAddition) {
             return this.text;
@@ -70,9 +73,14 @@ public class Edit {
         }
     }
 
+    /**
+     * Once the user no longer wants to see the edit, this makes the edit invisible
+     * Removals of text are forgotten, because they are useless once invisible to the user
+     */
     public void delete() {
         this.deleted = true;
         // drop deletes completely
+        // a delete does not need to be remembered once hte user no longer wants to see it
         if (!this.isAddition) {
             if (this.previous != null) {
                 this.previous.next = this.next;
@@ -83,10 +91,18 @@ public class Edit {
         }
     }
 
+    /**
+     * is this invisible to the user?
+     * @return boolean
+     */
     public boolean isDeleted() {
         return this.deleted;
     }
 
+    /**
+     * Get the position from the start of the FULL TEXT that the edit starts at
+     * @return int
+     */
     public int getPosition() {
         return this.position;
     }
@@ -95,14 +111,22 @@ public class Edit {
         this.position = position;
     }
 
+    /**
+     * inserts an edit in between two edits
+     * @param previous Edit the edit in front of it
+     * @param next Edit the edit after it
+     */
     public void insert(Edit previous, Edit next) {
         previous.next = this;
         next.previous = this;
         this.previous = previous;
         this.next = next;
-        // TODO determine if it's necessary in these methods to update position....
     }
 
+    /**
+     * Inserts THIS edit in front of the edit passed to the function
+     * @param next Edit -- the edit that will come after the edit this function is called on
+     */
     public void insertInFront(Edit next) {
         if (next != null) {
             next.previous = this;
@@ -110,11 +134,19 @@ public class Edit {
         this.next = next;
     }
 
+    /**
+     * Inserts THIS edit behind the edit passed to the function
+     * @param previous Edit -- the edit that will come before the edit this function is called on
+     */
     public void insertBehind(Edit previous) {
         previous.next = this;
         this.previous = previous;
     }
 
+    /**
+     * Get the size of the text this edit represents
+     * @return
+     */
     public int length() {
         if (this.isAddition) {
             return this.text.length();
@@ -124,6 +156,9 @@ public class Edit {
         }
     }
 
+    /**
+     * Get rid of this edit
+     */
     public void remove() {
         if (this.previous != null) {
             if (this.next != null) {
@@ -143,22 +178,37 @@ public class Edit {
 
         this.previous = null;
         this.next = null;
-        // TODO determine if it's necessary in these methods to update position....
     }
-    // TODO i'm thinking there should be an update position function
 
+    /**
+     * Does an edit come after this one?
+     * @return boolean
+     */
     public boolean hasNext() {
         return this.next != null;
     }
 
+    /**
+     * Does an edit come before this one?
+     * @return boolean
+     */
     public boolean hasPrevious() {
         return this.previous != null;
     }
 
+    /**
+     * Get the edit that comes after this one
+     * @return Edit
+     */
     public Edit getNext() {
         return this.next;
     }
 
+    /**
+     * based on the position, split this edit into two edit, and return the edit that was split
+     * @param position
+     * @return
+     */
     public Edit split(int position) {
         if (!this.isAddition) {
             System.out.println("WARNING: TRYING TO SPLIT A DELETION");
@@ -178,14 +228,27 @@ public class Edit {
         return newEdit;
     }
 
+    /**
+     * Sets the value of the deleted attribute...
+     * @param deleted boolean
+     */
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
+    /**
+     * Set the text attribute...
+     * @param text String
+     */
     private void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * Based on the text, merges subsequent edits into this one until the text is exhausted
+     * @param text String the text being merged
+     * @return Edit the next edit once the merge is performed
+     */
     public Edit merge(String text) {
         /*
             Gets the next edit that starts at the end of the given text
@@ -217,6 +280,9 @@ public class Edit {
         return edit;
     }
 
+    /**
+     * call on first node of list to update the position
+     */
     public void updatePosition() {
         if (this.hasPrevious()) {
             this.position = this.previous.position + this.previous.length();
@@ -232,6 +298,9 @@ public class Edit {
         return this.id;
     }
 
+    /**
+     * Merges all deleted edits that are sequential into a single edit
+     */
     public void mergeDeleted() {
         boolean keepLooking = false;
         boolean mergedWithFirst = false;
@@ -273,6 +342,10 @@ public class Edit {
         }
     }
 
+    /**
+     * String representation of the Edit, used to display editContainer
+     * @return String
+     */
     public String stringRepr() {
         String[] arr = {
                 "    [",
@@ -286,14 +359,25 @@ public class Edit {
         return String.join("\n", arr);
     }
 
+    /**
+     * gets the text affected by the edit
+     * @return String
+     */
     protected String getText() {
         return this.text;
     }
 
+    /**
+     * determine if text was inserted or deleted by this edit
+     * @return
+     */
     protected boolean isEditAnAddition() {
         return this.isAddition;
     }
 
+    /**
+     * undo this edit
+     */
     public void undo() {
         if (this.isAddition) {
             // remove itself from the list

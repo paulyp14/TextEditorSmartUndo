@@ -13,23 +13,43 @@ public class EditGroup {
 		this.editsInGroup = new ArrayList<>();
 		this.name = name;
 	}
-	
+
+	/**
+	 * Set the groupName attribute
+	 * @param groupName
+	 */
 	public void setGroupName(String groupName) { //set name for the group of edits
 		this.name = groupName;
 	}
-	
+
+	/**
+	 * Get the groupName
+	 * @return String
+	 */
 	public String getGroupName() { //get the name of the edit group
 		return name;
 	}
-	
+
+	/**
+	 * Determine how many edits are in a group
+	 * @return int
+	 */
 	public int getGroupSize() {
 		return this.editsInGroup.size();
 	}
-	
+
+	/**
+	 * Add EditViews to this group
+	 * @param newEdits list of the EditViews to add
+	 */
 	public void add(ArrayList<EditView> newEdits) { //adding a list of edits to the group
 		this.editsInGroup.addAll(newEdits);
 	}
-	
+
+	/**
+	 * Remove edits from this group based on IDs
+	 * @param editIds list of the edit IDs to remove
+	 */
 	public void removeById(ArrayList<Integer> editIds) { //remove list of edits out of the group
 		ArrayList<Integer> editIdxs = new ArrayList<>();
 		int curSize = 0;
@@ -45,10 +65,19 @@ public class EditGroup {
 		}
 	}
 
+	/**
+	 * See the Edits that are in this group
+	 * @return list of the EditViews in the group
+	 */
 	public ArrayList<EditView> getEdits() {
 		return this.editsInGroup;
 	}
 
+	/**
+	 * array representation of the Group, used by interactiveModelTestDriver
+	 * @param maxLen
+	 * @return
+	 */
 	public ArrayList<String> arrayRepr(int maxLen) {
 		ArrayList<String> asIndividualArrayList = new ArrayList<>();
 		this.editsInGroup.forEach(edit -> asIndividualArrayList.add(edit.forInteractiveModelTest(maxLen)));

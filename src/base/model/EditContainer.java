@@ -21,6 +21,10 @@ public class EditContainer {
         this.mostRecent = new Stack<>();
     }
 
+    /**
+     * Singleton access point
+     * @return EditContainer, the only EditContainer
+     */
     public static EditContainer getContainer() {
         if (containerSingleton == null) {
             containerSingleton = new EditContainer();
@@ -28,18 +32,35 @@ public class EditContainer {
         return containerSingleton;
     }
 
+    /**
+     * Determine the editContaienr was asked to perform an operation on its Edits
+     * @return boolean
+     */
     public boolean isUpdated() {
         return this.updated;
     }
 
+    /**
+     * Let the editContainer know that you have looked at it's updated Edits (used by GroupContainer)
+     */
     public void markSeen() {
         this.updated = false;
     }
 
+    /**
+     * Determine the number of edits in the EditContainer
+     * @return int
+     */
     public int size() {
         return this.size;
     }
 
+    /**
+     * Used to create an edit
+     * @param text String the affected text, either the text the user added or the text the user deleted
+     * @param position int the offset of the affected text from the start of the full text
+     * @param isAddition boolean flag to indicate whether the affected text was inserted or removed
+     */
     public void create(String text, int position, boolean isAddition) {
         this.updated = true;
 
@@ -150,6 +171,9 @@ public class EditContainer {
         this.mostRecent.push(edit);
     }
 
+    /**
+     * Updates the underlying edits and the stack to make sure the current state is accurately reflected in all components
+     */
     public void sync() {
         // guarantee the right positions
         if (this.first != null) {
@@ -178,6 +202,10 @@ public class EditContainer {
         }
     }
 
+    /**
+     * The representative FULL TEXT of the textbox as stored by the EditContainer
+     * @return String
+     */
     public String asText() {
         Edit edit = this.first;
         StringBuilder sb = new StringBuilder();
@@ -188,6 +216,10 @@ public class EditContainer {
         return sb.toString();
     }
 
+    /**
+     * Mark an edit for removal (indicate that the user is no longer interested in it, does not want to see it)
+     * @param editId int -- the id of the edit to hide
+     */
     public void delete(int editId) {
         this.updated = true;
 
@@ -208,6 +240,10 @@ public class EditContainer {
         this.sync();
     }
 
+    /**
+     * String representation
+     * @return String the editContainer as a string
+     */
     public String stringRepr() {
         String separator = "============================";
         ArrayList<String> editStringReprs = new ArrayList<>();
@@ -258,6 +294,10 @@ public class EditContainer {
         return String.join("\n", components);
     }
 
+    /**
+     * Get representative EditViews of entire EditContainer
+     * @return list of EditViews
+     */
     public ArrayList<EditView> view() {
         ArrayList<EditView> views = new ArrayList<>();
         Edit edit = this.first;
@@ -270,6 +310,11 @@ public class EditContainer {
         return views;
     }
 
+    /**
+     * Get representative EditViews for a subset of the edits
+     * @param editIds -- list of the ids of the subset of interest
+     * @return list of EditViews matching the ids
+     */
     public ArrayList<EditView> view(List<Integer> editIds) {
         ArrayList<EditView> views = new ArrayList<>();
         Edit edit = this.first;
@@ -282,10 +327,17 @@ public class EditContainer {
         return views;
     }
 
+    /**
+     * peek at the most recent edit
+     * @return the most recent Edit on the top of the stack
+     */
     public Edit mostRecentEdit() {
         return this.mostRecent.peek();
     }
 
+    /**
+     * Undo the most recent edit
+     */
     public void undo() {
         this.updated = true;
         if (!this.mostRecent.empty()) {
@@ -298,11 +350,19 @@ public class EditContainer {
         }
     }
 
+    /**
+     * Undo a single edit based on its id
+     * @param editId int
+     */
     public void undoById(int editId) {
         this.undoByIdWithoutSync(editId);
         this.sync();
     }
 
+    /**
+     * undo a single edit without calling the sync function
+     * @param editId the edit to undo
+     */
     private void undoByIdWithoutSync(int editId) {
         this.updated = true;
         Edit edit = this.first;
@@ -318,6 +378,10 @@ public class EditContainer {
         }
     }
 
+    /**
+     * undo a list of edits
+     * @param editIds list of editIds to undo
+     */
     public void undoByIds(List<Integer> editIds) {
         for (int editId: editIds) {
             this.undoByIdWithoutSync(editId);
@@ -325,6 +389,9 @@ public class EditContainer {
         this.sync();
     }
 
+    /**
+     * Get rid of all edits
+     */
     public void empty() {
         this.first = null;
         this.last = null;
