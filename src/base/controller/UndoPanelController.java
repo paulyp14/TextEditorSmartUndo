@@ -11,11 +11,13 @@ public class UndoPanelController implements ControllerInterface
 {
     private View undoPanelView; //type:UndoPanelView
     private GroupContainer  groupContainer;
+    private EditContainer	editContainer;
 
-    public UndoPanelController(View undoPanelView, GroupContainer  groupContainer)
+    public UndoPanelController(View undoPanelView, GroupContainer  groupContainer, EditContainer editC)
     {
         this.undoPanelView = undoPanelView;
         this.groupContainer = groupContainer;
+        this.editContainer = editC;
     }
 	
     public View getUndoPanelView()
@@ -24,7 +26,7 @@ public class UndoPanelController implements ControllerInterface
     }
     public GroupContainer getGroupContainer()
     {
-    	return this.getGroupContainer;
+    	return this.groupContainer;
     }
     public void setUndoPanelView(View undoPan)
     {
@@ -34,38 +36,30 @@ public class UndoPanelController implements ControllerInterface
     {
     	this.groupContainer = groupC;
     }
-    @Override
-    public void addNewEdit(int groupIndex)
+    public EditContainer getEditContainer()
     {
-        //Add buttonlistener?
-        String groupName = String.valueOf(groupIndex);
-        ArrayList<Integer> addItem = new ArrayList<>();
-        Random rand = new Random();
-        int randomEditNumber = rand.nextInt(9999999);
-        
-        addItem.add(randomEditNumber); //maybe something other than random numbers
-        
-        groupContainer.add(groupName, addItem);
-        groupContainer.update();
+    	return this.editContainer;
     }
-
-    @Override
-    public void addNewGroup()
+    public void setEditContainer(EditContainer editC)
     {
-        Random rand = new Random();
-        int randomGroupNumber = rand.nextInt(9999999);
-        //Add buttonlistener?
-        String groupName = String.valueOf(randomGroupNumber);
-        
-        groupContainer.create(groupName);
-        groupContainer.update();//Maybe in updateView?
+    	this.editContainer=editC;
+    }
+    @Override
+    public void addNewEdit(String text,int editIndex, boolean isAddition)
+    {
+       editContainer.create(text,editIndex, isAddition);
+    }
+    @Override
+    public void addNewGroup(int groupIndex, int editIndex)
+    {
+        String groupName = String.valueOf(groupIndex);
+        groupContainer.add(groupName, editIndex);
     }
 
     @Override
     public void undoEdit(int groupIndex, int editIndex)
     {
-        //Add buttonlistener?
-        
+        editContainer.undo();
     }
 
     @Override
