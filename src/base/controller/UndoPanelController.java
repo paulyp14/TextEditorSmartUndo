@@ -38,6 +38,8 @@ public class UndoPanelController implements ControllerInterface
         
         groupContainer.create(groupName);//groupName
         groupContainer.update();
+        
+        undoPanelView.createNewGroup();
     }
 
     @Override
@@ -66,6 +68,8 @@ public class UndoPanelController implements ControllerInterface
         String groupName = String.valueOf(groupIndex);
         groupContainer.removeAndDeleteGroup(groupName);
         groupContainer.update();
+        
+        undoPanelView.deleteEditGroup(groupIndex);
     }
 
     @Override
@@ -103,6 +107,7 @@ public class UndoPanelController implements ControllerInterface
             groupName = String.valueOf(i);
             //Deletes all groups provided that their index is numbered between 1 and the max amount of groups
             groupContainer.removeAndDeleteGroup(groupName); 
+            undoPanelView.deleteEditGroup(i);
         }
         
         groupContainer.update();
@@ -111,7 +116,6 @@ public class UndoPanelController implements ControllerInterface
     @Override
     public void updateView()
     {
-        //undoPanelView
     }
     
     /*
