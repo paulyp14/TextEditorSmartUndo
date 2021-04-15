@@ -24,7 +24,7 @@ public class UndoPanelView extends JPanel {
     private JButton newGroupBtn;
 
     private final int SIZE_WIDTH = 200;
-    private final int GROUP_SIZE_MAX = 10;
+    private final int GROUP_SIZE_MAX = 7;
 
     /**
      * Default constructor
@@ -53,8 +53,6 @@ public class UndoPanelView extends JPanel {
             }
         });
     }
-
-
 
 
     //**********    PUBLIC  METHODS   **********//
@@ -112,6 +110,11 @@ public class UndoPanelView extends JPanel {
         add(newEditGroup);
         add(newGroupBtn);
 
+        // remove "New Group" button if reach limit
+        if (editGroupViews.size() >= GROUP_SIZE_MAX)
+            remove(newGroupBtn);
+
+        updateUI();
         return true;
     }
     
@@ -140,6 +143,11 @@ public class UndoPanelView extends JPanel {
 
         // TODO remove edit from text box
 
+        // re-add "New Group" button if under limit
+        if (editGroupViews.size() < 7 && newGroupBtn.getParent() != this)
+            add(newGroupBtn);
+
+        updateUI();
         return true;
     }
 

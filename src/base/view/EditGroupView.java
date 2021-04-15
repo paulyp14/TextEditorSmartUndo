@@ -29,9 +29,9 @@ public class EditGroupView extends JPanel implements ActionListener {
     private JPanel bottomPanel;
     private JButton expandCollapseBtn;
 
-    private String deleteImgPath = "..\\..\\..\\resources\\delete.png";
-    private String expandImgPath = "..\\..\\..\\resources\\plus.png";
-    private String collapseImgPath = "..\\..\\..\\resources\\minus.png";
+    private String deleteImgPath = "resources/delete.png";
+    private String expandImgPath = "resources/plus.png";
+    private String collapseImgPath = "resources/minus.png";
 
 
 
@@ -157,7 +157,7 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(false);
         bottomPanel.setVisible(false);
 
-        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
+        expandCollapseBtn.setIcon(new ImageIcon(expandImgPath));
         parentView.onCollapseEditGroup();
     }
 
@@ -169,13 +169,17 @@ public class EditGroupView extends JPanel implements ActionListener {
         middlePanel.setVisible(true);
         bottomPanel.setVisible(true);
 
-        expandCollapseBtn.setIcon(new ImageIcon(expandImgPath));
+        expandCollapseBtn.setIcon(new ImageIcon(collapseImgPath));
         parentView.onExpandEditGroup(groupIndex);
     }
 
 
     //**********    PRIVATE METHODS   **********//
 
+
+    /**
+     * Sets up the UI of the top panel of the edit group.
+     */
     private void setTopPanel() {
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 4));
@@ -192,6 +196,16 @@ public class EditGroupView extends JPanel implements ActionListener {
         deleteGroupBtn.setBorderPainted(false);
         deleteGroupBtn.setContentAreaFilled(false);
         deleteGroupBtn.setMargin(new Insets(0, 0, 0, 0));
+        deleteGroupBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int response = showConfirmDialog("Are you sure you wish to delete this edit group?");
+                if (response == 0) { // presses yes
+                    deleteThisGroup();
+                    updateUI();
+                }
+            }
+        });
         
         // Button for expanding and collapsing Edit Group
         expandCollapseBtn = new JButton();
@@ -199,6 +213,17 @@ public class EditGroupView extends JPanel implements ActionListener {
         expandCollapseBtn.setBorderPainted(false);
         expandCollapseBtn.setContentAreaFilled(false);
         expandCollapseBtn.setMargin(new Insets(0, 0, 0, 0));
+        expandCollapseBtn.addActionListener(new ActionListener() { 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // if this is expanded, collapse it
+                System.out.println(getGroupIndex());
+                if (parentView.getCurrentlyFocusedGroup() == getGroupIndex())
+                    collapseEditList();
+                else
+                    expandEditList(); 
+            }
+        });
 
         // We wrap in another JPanel so we can align to the right
         JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT,0, 0));
@@ -242,9 +267,11 @@ public class EditGroupView extends JPanel implements ActionListener {
 
         JButton undoBtn = new JButton("Undo");
         undoBtn.setBackground(Color.WHITE);
+        // TODO imple event handling
 
         JButton undoAllBtn = new JButton("Undo All");
         undoAllBtn.setBackground(Color.WHITE);
+        // TODO imple event handling
 
         bottomPanel.add(undoBtn);
         bottomPanel.add(undoAllBtn);
@@ -265,7 +292,7 @@ public class EditGroupView extends JPanel implements ActionListener {
     private int showConfirmDialog(String message) {
 
         int dialogResult = JOptionPane.showConfirmDialog (
-                null, 
+                parentView, 
                 message,
                 "TESU",
                 JOptionPane.YES_NO_OPTION,

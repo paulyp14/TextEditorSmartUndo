@@ -47,18 +47,8 @@ public class TextEditor {
         menu = new MenuBarView();
         tbox = new TextBoxView();
         undoPanel = new UndoPanelView(SIZE_HEIGHT);
-
-        // Wrap with textarea scroll pane
-        JScrollPane tbox_scroll = new JScrollPane (
-            tbox, 
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-        );
-
-        frame.getContentPane().add(BorderLayout.NORTH, menu);
-        frame.getContentPane().add(BorderLayout.CENTER, tbox_scroll);
-        frame.getContentPane().add(BorderLayout.LINE_START, undoPanel);
-
+        setupFrameComponents();
+        
 
         // Set up Controllers
     }
@@ -83,5 +73,26 @@ public class TextEditor {
 
     public UndoPanelView getUndoPanelView() {
         return undoPanel;
+    }
+
+    private void setupFrameComponents() {
+
+        // Wrap with textarea scroll pane
+        JScrollPane tbox_scroll = new JScrollPane (
+            tbox, 
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+
+        // Wrap with textarea scroll pane
+        // JScrollPane undoPanel_scroll = new JScrollPane (
+        //     undoPanel, 
+        //     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+        //     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        // );
+
+        frame.getContentPane().add(BorderLayout.NORTH, menu);
+        frame.getContentPane().add(BorderLayout.CENTER, tbox_scroll);
+        frame.getContentPane().add(BorderLayout.LINE_START, undoPanel);
     }
 }

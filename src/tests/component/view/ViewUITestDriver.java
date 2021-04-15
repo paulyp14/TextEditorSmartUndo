@@ -74,24 +74,24 @@ public class ViewUITestDriver {
 
     /**
      * To test:
-     *  1. cannot be more than 10 edit groups
+     *  1. cannot be more than 7 edit groups
      */
     private boolean TestCreateNewGroup() {
 
         UndoPanelView undoPanelRef = editor.getUndoPanelView();
 
-        System.out.println("Adding 10 new edit groups..");
-        for (int i = 0; i < 10; i++) {
+        System.out.println("Adding 7 new edit groups..");
+        for (int i = 0; i < 7; i++) {
             undoPanelRef.createNewGroup();
         }
         System.out.println("Number of edit groups: " + undoPanelRef.getNumOfEditGroups());
-        if (undoPanelRef.getNumOfEditGroups() != 10)
+        if (undoPanelRef.getNumOfEditGroups() != 7)
             return false;
         
-        System.out.println("Attempt creating a new edit group above 10 (max)..");
+        System.out.println("Attempt creating a new edit group above 7 (max)..");
         System.out.println("Number of edit groups: " + undoPanelRef.getNumOfEditGroups());
         boolean success = undoPanelRef.createNewGroup();
-        if (success || undoPanelRef.getNumOfEditGroups() > 10)
+        if (success || undoPanelRef.getNumOfEditGroups() > 7)
             return false;
 
         return true;
@@ -106,22 +106,22 @@ public class ViewUITestDriver {
 
         UndoPanelView undoPanelRef = editor.getUndoPanelView();
 
-        // repopulate if size is not 10
-        while (undoPanelRef.getNumOfEditGroups() < 10)
+        // repopulate if size is not 7
+        while (undoPanelRef.getNumOfEditGroups() < 7)
             undoPanelRef.createNewGroup();
 
-        System.out.println("Deleting 8th group out of the 10, expecting index of group 9 and 10 to re-adjust..");
-        undoPanelRef.deleteEditGroup(7);
+        System.out.println("Deleting 5th group out of the 7, expecting index of group 6 and 7 to re-adjust..");
+        undoPanelRef.deleteEditGroup(4);
         
         System.out.println("Number of edit groups: " + undoPanelRef.getNumOfEditGroups());
-        if (undoPanelRef.getNumOfEditGroups() != 9)
+        if (undoPanelRef.getNumOfEditGroups() != 6)
             return false;
         
-        int group9Index = undoPanelRef.getEditGroupViews().get(7).getGroupIndex();
-        int group10Index = undoPanelRef.getEditGroupViews().get(8).getGroupIndex();
-        System.out.println("Group 9 index (expect 7): " + group9Index);
-        System.out.println("Group 10 index (expect 8): " + group10Index);
-        if (group9Index != 7 || group10Index != 8)
+        int group6Index = undoPanelRef.getEditGroupViews().get(4).getGroupIndex();
+        int group7Index = undoPanelRef.getEditGroupViews().get(5).getGroupIndex();
+        System.out.println("Group 6 index (expect 4): " + group6Index);
+        System.out.println("Group 7 index (expect 5): " + group7Index);
+        if (group6Index != 4 || group7Index != 5)
             return false;
 
         System.out.println("Attempt deleting at index -1..");
