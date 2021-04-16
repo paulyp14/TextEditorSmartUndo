@@ -1,5 +1,9 @@
 package base.controller;
 
+/**
+ * ControllerInterface, abstracts the Controller component
+ * @author Ian Ngaruiya Njoroge
+ */
 public interface ControllerInterface
 {
 	public void addNewEdit(int groupIndex, String text,int editIndex, boolean isAddition);
