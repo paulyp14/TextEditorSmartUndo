@@ -4,6 +4,7 @@ import base.model.*;
 import base.view.*;
 import java.util.*;
 /**  
+ * Controller component for the undoPanel
  * @author Ian Ngaruiya Njoroge
  */
 public class UndoPanelController implements ControllerInterface
@@ -18,7 +19,14 @@ public class UndoPanelController implements ControllerInterface
         this.groupContainer = groupContainer;
         this.editContainer = editC;
     }
-
+    
+    /**
+     * addNewEdit method, adds an Edit item to a specified Edit group as per its index
+     * @param groupIndex The index of the group that will receive the new Edit item
+     * @param text The string of text to be added
+     * @param editIndex The index of the new Edit item
+     * @param isAddition Boolean condition that ascertains if this is a new addition or a modification
+     */
     @Override
     public void addNewEdit(int groupIndex, String text, int editIndex, boolean isAddition)
     {
@@ -31,6 +39,10 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
     }
 
+    /**
+     * addNewGroup method, adds a new Edit group
+     * @param groupIndex The index of the new Edit group
+     */
     @Override
     public void addNewGroup(int groupIndex)
     {        
@@ -42,6 +54,11 @@ public class UndoPanelController implements ControllerInterface
         undoPanelView.createNewGroup();
     }
 
+    /**
+     * undoEdit method, this method will undo a specified Edit item from a given group
+     * @param groupIndex The index of the Edit group
+     * @param editIndex The index of the  Edit item
+     */
     @Override
     public void undoEdit(int groupIndex, int editIndex)
     {
@@ -54,6 +71,10 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
     }
 
+    /**
+     * undoGroupEdits method, this method will undo all the Edit items within a specified Edit group 
+     * @param groupIndex The index of the Edit group
+     */
     @Override
     public void undoGroupEdits(int groupIndex)
     {
@@ -62,6 +83,10 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
     }
 
+    /**
+     * deleteGroup method, deletes an entire Edit group as well as the Edit items within
+     * @param groupIndex The index of the Edit group
+     */
     @Override
     public void deleteGroup(int groupIndex)
     {        
@@ -72,6 +97,10 @@ public class UndoPanelController implements ControllerInterface
         undoPanelView.deleteEditGroup(groupIndex);
     }
 
+    /**
+     * deleteRandomEdits method, deletes arbitrary Edit items in an Edit group
+     * @param groupIndex The index of the Edit group
+     */
     @Override
     public void deleteRandomEdits(int groupIndex)
     {
@@ -96,6 +125,9 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
     }
 
+    /**
+     * deleteAllGroups method, this method deletes every group in the UndoPanel
+     */
     @Override
     public void deleteAllGroups()
     {
@@ -118,33 +150,55 @@ public class UndoPanelController implements ControllerInterface
     {
     }
     
-    /*
-        ACCESSORS AND MUTATORS
-    */
+    /**
+     * getUndoPanelView, getter method for the UndoPanelView property
+     * @return An instance of UndoPanelView
+     */   
     public UndoPanelView getUndoPanelView()
     {
         return undoPanelView;
     }
 
+    /**
+     * setUndoPanelView, setter method for the UndoPanelView property
+     * @param undoPanelView The UndoPanelView instance to be set
+     */
     public void setUndoPanelView(UndoPanelView undoPanelView)
     {
         this.undoPanelView = undoPanelView;
     }
 
+    /**
+     * getGroupContainer, getter method for the GroupContainer property
+     * @return An instance of GroupContainer
+     */   
     public GroupContainer getGroupContainer()
     {
         return groupContainer;
     }
 
+    /**
+     * setGroupContainer, setter method for the GroupContainer property
+     * @param groupContainer The GroupContainer instance to be set
+     */
     public void setGroupContainer(GroupContainer groupContainer)
     {
         this.groupContainer = groupContainer;
     }
-    
+ 
+     /**
+     * getEditContainer, getter method for the EditContainer property
+     * @return An instance of EditContainer
+     */   
     public EditContainer getEditContainer()
     {
     	return this.editContainer;
     }
+    
+    /**
+     * setEditContainer, setter method for the EditContainer property
+     * @param editC The EditContainer instance to be set
+     */
     public void setEditContainer(EditContainer editC)
     {
     	this.editContainer=editC;
