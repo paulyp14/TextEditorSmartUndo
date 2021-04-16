@@ -1,0 +1,23 @@
+Within our src folder, we have two folders for our source code:
+1. base
+2. tests
+
+The base folder has the code for our implementation of the software, 
+while the test folder has drivers that run independent tests on each 
+components: model, view, and controller.
+
+We also have other folders such as resources which contains icons 
+of the buttons used in our application.
+
+
+--------------------------
+HOW TO RUN THE APPLICATION:
+--------------------------
+1. Navigate to src/base/
+2. Run the java file: TextEditorDriver.java
+
+
+---------
+GIT LINK:
+---------
+https://github.com/paulyp14/TextEditorSmartUndo.git
