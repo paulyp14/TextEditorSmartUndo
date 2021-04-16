@@ -14,15 +14,17 @@ public class TextBoxController implements ControllerInterface {
 	// attributes, the TextBoxController is connected to the GroupContainer and the TextBoxView
 	private TextBoxView textBoxView;
     private GroupContainer groupContainer;
+    private int indexEdit;
 
     /**
 	 * contructor
 	 * @param TextBoxView our textboxview view
 	 * @param GroupContainer our groupcontainer model
 	 */
-    public TextBoxController(TextBoxView tbv, GroupContainer gc) {
+    public TextBoxController(TextBoxView tbv) {
     	textBoxView = tbv;
-    	groupContainer = gc;
+    	groupContainer = GroupContainer.getContainer();
+    	indexEdit = 1;
     }
     
     /**
