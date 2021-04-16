@@ -277,4 +277,20 @@ public class GroupContainer {
 	public ArrayList<EditView> viewEditsInDefaultGroup() {
 		return this.defaultGroup.getEdits();
 	}
+	
+	/**
+	 * Getter for the groups attribute
+	 * @return groups attribute
+	 */
+	public HashMap<String, EditGroup> getGroups() {
+		return this.groups;
+	}
+	
+	/**
+	 * Getter for the editContainer attribute
+	 * @return editContainer attribute
+	 */
+	public EditContainer getEditContainer() {
+		return this.editContainer;
+	}
 }
