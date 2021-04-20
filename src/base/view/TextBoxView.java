@@ -2,6 +2,8 @@ package base.view;
 
 import javax.swing.JTextArea;
 
+import base.controller.TextBoxController;
+
 /**
  * View class that manages the user interface of 
  * the JTextArea.
@@ -10,7 +12,7 @@ import javax.swing.JTextArea;
  */
 public class TextBoxView extends JTextArea {
 
-    //private TextBoxController controller
+    private TextBoxController controller;
 
     /**
      * Default construtor
@@ -24,9 +26,18 @@ public class TextBoxView extends JTextArea {
 
     //**********    PUBLIC  METHODS   **********//
 
-    // public void setController(TextBoxController controller) {
-    //     this.controller = controller;
-    // }
+    public void setController(TextBoxController controller) {
+         this.controller = controller;
+    }
+    
+    public void addEdit (String str, int position, boolean isAddition) {
+    	controller.add(str, position, isAddition);
+    }
+    
+    public void undo() {
+    	controller.undo();
+    }
+
 
     //**********    PRIVATE METHODS   **********//
     
