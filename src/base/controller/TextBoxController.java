@@ -14,41 +14,66 @@ public class TextBoxController implements ControllerInterface {
 	// attributes, the TextBoxController is connected to the GroupContainer and the TextBoxView
 	private TextBoxView textBoxView;
     private GroupContainer groupContainer;
-    private int indexEdit;
+    private UndoPanelView undoPanelView;
 
     /**
 	 * contructor
 	 * @param TextBoxView our textboxview view
 	 * @param GroupContainer our groupcontainer model
 	 */
-    public TextBoxController(TextBoxView tbv) {
+    public TextBoxController(TextBoxView tbv, UndoPanelView upv) {
     	textBoxView = tbv;
     	groupContainer = GroupContainer.getContainer();
-    	indexEdit = 1;
+    	undoPanelView = upv;
     }
     
     /**
-	 * 
-	 * @param TextBoxView our textboxview view
-	 * @param GroupContainer our groupcontainer model
+	 * method that needs to be overriden from the interface but the textboxcontroller does not need to implement this method.
+	 * @param int groupIndex
+	 * @param String text
+	 * @param int editIndex
+	 * @param booolean isAddition
 	 */
 	@Override
 	public void addNewEdit(int groupIndex, String text,int editIndex, boolean isAddition) {
-		String groupName = String.valueOf(groupIndex);
+		throw new UnsupportedOperationException("Not supported yet."); // the textboxcontroller does not need to implement this method so we throw an exception (it shouldn't be called)
+	}
+	
+	
+	/**
+	 * reading from the textboxview and creating newedits.
+	 * @param String text
+	 * @param int position
+	 * @param booolean isAddition
+	 */
+	public void add(String text, int position, boolean isAddition) {
+		String groupName;
+		groupContainer.getEditContainer().create(text, position, isAddition);
+		int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId();
 		
-		if (!groupContainer.getGroups().containsKey(groupName)) {
-			System.out.println("ERROR: this group name does not exist");
-			// TODO this should be an exception
-			return;
+		if (undoPanelView.getCurrentlyFocusedGroup() != -1)
+		{
+			groupName = String.valueOf(undoPanelView.getCurrentlyFocusedGroup());
+			groupContainer.add(groupName, newItemId);
 		}
 		
-		groupContainer.getEditContainer().create(text,editIndex, isAddition);
-        int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId();
-        
-        groupContainer.add(groupName, newItemId);
-        groupContainer.update();
-		
+		groupContainer.update();
 	}
+	/**
+	 * reading from the textboxview and creating newedits.
+	 * @param String text
+	 * @param int position
+	 * @param booolean isAddition
+	 */
+	public void undo() {
+		if (groupContainer.getEditContainer().mostRecentEdit() == null)
+			return;
+
+		groupContainer.getEditContainer().undo();
+		groupContainer.update();
+		updateView();
+	}
+	
 	
 	/**
 	 * method that needs to be overriden from the interface but the textboxcontroller does not need to implement this method.
@@ -66,18 +91,7 @@ public class TextBoxController implements ControllerInterface {
 	 */
 	@Override
 	public void undoEdit(int groupIndex, int editIndex) {
-		if (!groupContainer.getGroups().containsKey(String.valueOf(groupIndex))) {
-			System.out.println("ERROR: this group name does not exist");
-			// TODO this should be an exception
-			return;
-		}
-		
-		ArrayList<Integer> editsToRemove = new ArrayList<>();
-		editsToRemove.add(editIndex);
-		groupContainer.getGroups().get(String.valueOf(groupIndex)).removeById(editsToRemove);
-		
-		groupContainer.getEditContainer().undo();
-		updateView();
+		throw new UnsupportedOperationException("Not supported yet."); // the textboxcontroller does not need to implement this method so we throw an exception (it shouldn't be called)
 	}
 	
 	/**
@@ -124,5 +138,6 @@ public class TextBoxController implements ControllerInterface {
 		String text = groupContainer.getEditContainer().asText();
 		textBoxView.setText(text);
 	}
+	
 
 }
