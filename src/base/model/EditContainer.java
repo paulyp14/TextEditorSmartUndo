@@ -332,6 +332,8 @@ public class EditContainer {
      * @return the most recent Edit on the top of the stack
      */
     public Edit mostRecentEdit() {
+    	if (mostRecent.isEmpty())
+    		return null;
         return this.mostRecent.peek();
     }
 

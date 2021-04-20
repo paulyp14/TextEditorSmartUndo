@@ -293,4 +293,8 @@ public class GroupContainer {
 	public EditContainer getEditContainer() {
 		return this.editContainer;
 	}
+	
+	public EditGroup getDefault() {
+		return this.defaultGroup;
+	}
 }
