@@ -13,6 +13,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JScrollPane;
 import javax.swing.Timer;
@@ -23,7 +25,7 @@ import javax.swing.event.DocumentListener;
 /**
  * Class that contains the entire structure of the application.
  * 
- * @author Thanh Tung Nguyen
+ * @author Thanh Tung Nguyen, Andy Nguyen
  */
 public class TextEditor {
 
@@ -51,13 +53,17 @@ public class TextEditor {
     public void run() {
     	frame.setVisible(true);
     	
-    	str = tbox.getText();
+    	str = tbox.getText(); // initialize the str variable.
+    	// Deffered Document Listener to detect 5 sec of inactivity (no typing)
     	DeferredDocumentListener listener = new DeferredDocumentListener(5000, new ActionListener() {
+    		/**
+    		 * Action listener (no activity for 5 sec)
+    		 */
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if (str.length() < tbox.getText().length())
-            		tbox.addEdit(tbox.getText().substring(str.length(), tbox.getText().length()),-1,true);
-            	str = tbox.getText();
+            	String temp = tbox.getText();
+            	tbox.readEdits(str, temp); // read the edits after 5 secs of inactivity.
+                str = tbox.getText(); // update previous tbox
             }
         }, true);
         tbox.getDocument().addDocumentListener(listener);
@@ -71,20 +77,7 @@ public class TextEditor {
             @Override
             public void focusLost(FocusEvent e) {
             	String temp = tbox.getText();
-            	if (str.length() < temp.length())
-            	{
-            		int i = 0;
-            		while (i < str.length())
-            		{
-            			if (str.charAt(i) != (temp.charAt(i)))
-            				break;
-            			i++;
-            		}
-            		if (i == str.length())
-            			tbox.addEdit(temp.substring(i, temp.length()-1), -1, true);
-            		else
-            			tbox.addEdit(temp.substring(i, temp.length()-i), i, true);
-            	}
+            	tbox.readEdits(str, temp); // read the edits if user clicks outside the text
                 listener.stop();
                 str = tbox.getText();
             }
@@ -99,20 +92,62 @@ public class TextEditor {
 
     		@Override
     		public void keyPressed(KeyEvent e) {
+    			// if user clicks ctrl+z
     			if ((e.getKeyCode() == KeyEvent.VK_Z) && e.isControlDown()) {
     				listener.reset();
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits before undoing
     				tbox.undo();
+    				str = tbox.getText(); // update previous tbox
     			}
+    			// when the user clicks enter or tab, read the edits before adding the string \n or \t
+    			if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_TAB)) {
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits
+                    str = tbox.getText(); // update previous tbox
+    			}
+    			// when the user clicks up, down, left or right, read the edits
+    			if ((e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_LEFT)
+    					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits
+                    str = tbox.getText(); // update previous tbox
+    			}
+    			// when the user clicks backspace or delete, read the edits before removing text.
+    			if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits
+                    str = tbox.getText(); // update previous tbox
+    			}
+    		
 
     		}
 
     		@Override
     		public void keyReleased(KeyEvent e) {
-    			// need to override to implement this method but will not be used.
-    			
+    			// when the user releases enter or tab, read the edits (the string \n or \t)
+    			if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_TAB)) {
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits
+                    str = tbox.getText(); // update previous tbox
+    			}
+    			// when the user releases backspace or delete, read the edits after removing text.
+    			if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
+    				String temp = tbox.getText();
+                	tbox.readEdits(str, temp); // read the edits
+                    str = tbox.getText(); // update previous tbox
+    			}
     		}
         	
         });
+        tbox.addMouseListener(new MouseAdapter() {
+        	public void mouseClicked(MouseEvent me) {
+        		String temp = tbox.getText();
+            	tbox.readEdits(str, temp); // read the edits if user clicks on the text
+                str = tbox.getText();
+        	}
+        });
+
     }
 
 
