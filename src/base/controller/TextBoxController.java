@@ -11,7 +11,8 @@ import base.view.*;
  */
 public class TextBoxController implements ControllerInterface {
 	
-	// attributes, the TextBoxController is connected to the GroupContainer and the TextBoxView
+	// attributes, the TextBoxController is connected to the GroupContainer and the TextBoxView, 
+	// also need to be connected to the undopanelview, to get the currently focused group.
 	private TextBoxView textBoxView;
     private GroupContainer groupContainer;
     private UndoPanelView undoPanelView;
@@ -19,7 +20,7 @@ public class TextBoxController implements ControllerInterface {
     /**
 	 * contructor
 	 * @param TextBoxView our textboxview view
-	 * @param GroupContainer our groupcontainer model
+	 * @param UndoPanelView our undopanelview model
 	 */
     public TextBoxController(TextBoxView tbv, UndoPanelView upv) {
     	textBoxView = tbv;
@@ -47,10 +48,13 @@ public class TextBoxController implements ControllerInterface {
 	 * @param booolean isAddition
 	 */
 	public void add(String text, int position, boolean isAddition) {
-		String groupName;
-		groupContainer.getEditContainer().create(text, position, isAddition);
-		int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId();
+		String groupName; // to store the currently focused group name as string
 		
+		//create the edit in the editcontainer.
+		groupContainer.getEditContainer().create(text, position, isAddition);
+		int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId(); // store the current id of the newly created edit.
+		
+		// if the undopanel view is focused on a group, create an edit in that group
 		if (undoPanelView.getCurrentlyFocusedGroup() != -1)
 		{
 			groupName = String.valueOf(undoPanelView.getCurrentlyFocusedGroup());
@@ -60,18 +64,15 @@ public class TextBoxController implements ControllerInterface {
 		groupContainer.update();
 	}
 	/**
-	 * reading from the textboxview and creating newedits.
-	 * @param String text
-	 * @param int position
-	 * @param booolean isAddition
+	 * reading from the textboxview a ctrl+z and undoing.
 	 */
 	public void undo() {
-		if (groupContainer.getEditContainer().mostRecentEdit() == null)
+		if (groupContainer.getEditContainer().mostRecentEdit() == null) // if there are no edits, do nothing.
 			return;
 
-		groupContainer.getEditContainer().undo();
-		groupContainer.update();
-		updateView();
+		groupContainer.getEditContainer().undo(); // call the undo() in the editcontainer to undo the last operation
+		groupContainer.update(); // update the groupcontainer
+		updateView(); // update the textboxview
 	}
 	
 	
@@ -85,7 +86,7 @@ public class TextBoxController implements ControllerInterface {
 	}
 	
 	/**
-	 * 
+	 * method that needs to be overriden from the interface but the textboxcontroller does not need to implement this method.
 	 * @param int groupIndex
 	 * @param int editIndex
 	 */
@@ -123,7 +124,6 @@ public class TextBoxController implements ControllerInterface {
 	
 	/**
 	 * method that needs to be overriden from the interface but the textboxcontroller does not need to implement this method.
-	 * @param int groupIndex
 	 */
 	@Override
 	public void deleteAllGroups() {
@@ -139,5 +139,12 @@ public class TextBoxController implements ControllerInterface {
 		textBoxView.setText(text);
 	}
 	
+	/**
+     * Displays the content of both the editcontainer and groupcontainer on the console.
+     */
+	public void StringRepr() {
+		System.out.println(groupContainer.stringRepr());
+		System.out.println(groupContainer.getEditContainer().stringRepr());
+	}
 
 }
