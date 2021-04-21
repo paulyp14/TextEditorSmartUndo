@@ -106,9 +106,7 @@ public class UndoPanelController implements ControllerInterface
 
         undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(randIndex);
 
-        // for(int i = 0; i < undoPanelView.getEditGroupViews().size(); i++) {
-        //     System.out.print("remaining: " + undoPanelView.getEditGroupViews().get(i).getGroupIndex());
-        // }
+        textBoxController.updateView();
     }
 
     @Override
@@ -128,9 +126,11 @@ public class UndoPanelController implements ControllerInterface
         }
     }
 
+    // Update undo panel based on current state of model
     @Override
     public void updateView()
     {
+        // TODO
     }
     
     /*

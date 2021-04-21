@@ -147,6 +147,9 @@ public class UndoPanelView extends JPanel {
             System.out.println("UndoPanelView.deleteEditGroup: Index of edit group is out of range.");
             return false;
         }
+        
+        // Undo all edits in group we're deleting?
+        //controller.undoGroupEdits(index);
 
         // reset group being focused
         if (index == curFocusedGroup)
@@ -162,8 +165,6 @@ public class UndoPanelView extends JPanel {
         for (int i = index; i < editGroupViews.size(); i++) {
             editGroupViews.get(i).moveIndexDown();
         }
-
-        // TODO remove edit from text box
 
         // re-add "New Group" button if under limit
         if (editGroupViews.size() < 7 && newGroupBtn.getParent() != this)
