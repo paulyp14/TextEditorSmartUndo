@@ -54,6 +54,7 @@ public class TextEditor {
         UndoPanelController undoPanelController = new UndoPanelController(undoPanel);
         MenuBarController menuBarController = new MenuBarController(menu, undoPanelController);
         TextBoxController textBoxController = new TextBoxController(tbox, undoPanelController);
+        undoPanelController.setTextBoxController(textBoxController);
 
         undoPanel.setController(undoPanelController);
         menu.setController(menuBarController);

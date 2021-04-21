@@ -12,12 +12,17 @@ public class UndoPanelController implements ControllerInterface
     private UndoPanelView undoPanelView; 
     private GroupContainer groupContainer;
     private EditContainer editContainer;
+    private TextBoxController textBoxController;
 
     public UndoPanelController(UndoPanelView undoPanelView)
     {
         this.undoPanelView = undoPanelView;
         this.groupContainer = GroupContainer.getContainer();
         this.editContainer = EditContainer.getContainer();
+    }
+
+    public void setTextBoxController(TextBoxController textBoxController) {
+        this.textBoxController = textBoxController;
     }
 
     @Override
@@ -57,6 +62,7 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
 
         undoPanelView.getEditGroupViews().get(groupIndex).undoEdit(editIndex);
+        textBoxController.updateView();
     }
 
     @Override
@@ -67,6 +73,7 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.update();
 
         undoPanelView.getEditGroupViews().get(groupIndex).undoAllEdits();
+        textBoxController.updateView();
     }
 
     @Override

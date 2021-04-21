@@ -134,7 +134,6 @@ public class EditGroupView extends JPanel {
         }
             
         listModel.remove(index);
-        // TODO use controller
         return true;
     }
 
@@ -150,7 +149,6 @@ public class EditGroupView extends JPanel {
         }
             
         listModel.clear();
-        // TODO use controller
         return true;
     }
 

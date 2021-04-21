@@ -73,6 +73,13 @@ public class TextBoxController implements ControllerInterface {
 		groupContainer.getEditContainer().undo(); // call the undo() in the editcontainer to undo the last operation
 		groupContainer.update(); // update the groupcontainer
 		updateView(); // update the textboxview
+
+		int focusedGroupIndex = undoPanelController.getUndoPanelView().getCurrentlyFocusedGroup();
+		if (focusedGroupIndex != -1)
+		{
+			int lastItem = undoPanelController.getUndoPanelView().getEditGroupViews().get(focusedGroupIndex).getListModel().getSize() - 1;
+			undoPanelController.undoEdit(focusedGroupIndex, lastItem);
+		}
 	}
 	
 	
