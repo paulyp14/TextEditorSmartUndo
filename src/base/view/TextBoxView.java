@@ -83,12 +83,6 @@ public class TextBoxView extends JTextArea {
     				undo();
     				str = getText(); // update previous tbox
     			}
-    			// when the user clicks enter or tab, read the edits before adding the string \n or \t
-    			if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_TAB)) {
-    				String temp = getText();
-                	readEdits(str, temp); // read the edits
-                    str = getText(); // update previous tbox
-    			}
     			// when the user clicks up, down, left or right, read the edits
     			if ((e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_LEFT)
     					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
