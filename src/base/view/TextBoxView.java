@@ -44,7 +44,7 @@ public class TextBoxView extends JTextArea {
             @Override
             public void actionPerformed(ActionEvent e) {
             	String temp = getText();
-            	readEdits(str, temp, false); // read the edits after 5 secs of inactivity.
+            	readEdits(str, temp); // read the edits after 5 secs of inactivity.
                 str = getText(); // update previous tbox
             }
         }, true);
@@ -60,7 +60,7 @@ public class TextBoxView extends JTextArea {
             @Override
             public void focusLost(FocusEvent e) {
             	String temp = getText();
-            	readEdits(str, temp, false); // read the edits if user clicks outside the text
+            	readEdits(str, temp); // read the edits if user clicks outside the text
                 listener.stop();
                 str = getText();
             }
@@ -79,7 +79,7 @@ public class TextBoxView extends JTextArea {
     			if ((e.getKeyCode() == KeyEvent.VK_Z) && e.isControlDown()) {
     				listener.reset();
     				String temp = getText();
-                	readEdits(str, temp, false); // read the edits before undoing
+                	readEdits(str, temp); // read the edits before undoing
     				undo();
     				str = getText(); // update previous tbox
     			}
@@ -87,13 +87,13 @@ public class TextBoxView extends JTextArea {
     			if ((e.getKeyCode() == KeyEvent.VK_UP) || (e.getKeyCode() == KeyEvent.VK_DOWN) || (e.getKeyCode() == KeyEvent.VK_LEFT)
     					|| (e.getKeyCode() == KeyEvent.VK_RIGHT)) {
     				String temp = getText();
-                	readEdits(str, temp, false); // read the edits
+                	readEdits(str, temp); // read the edits
                     str = getText(); // update previous tbox
     			}
     			// when the user clicks backspace or delete, read the edits before removing text.
     			if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
     				String temp = getText();
-                	readEdits(str, temp, true); // read the edits
+                	readEdits(str, temp); // read the edits
                     str = getText(); // update previous tbox
     			}
     		
@@ -105,13 +105,13 @@ public class TextBoxView extends JTextArea {
     			// when the user releases enter or tab, read the edits (the string \n or \t)
     			if ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_TAB)) {
     				String temp = getText();
-                	readEdits(str, temp, false); // read the edits
+                	readEdits(str, temp); // read the edits
                     str = getText(); // update previous tbox
     			}
     			// when the user releases backspace or delete, read the edits after removing text.
     			if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
     				String temp = getText();
-                	readEdits(str, temp, true); // read the edits
+                	readEdits(str, temp); // read the edits
                     str = getText(); // update previous tbox
     			}
     		}
@@ -120,7 +120,7 @@ public class TextBoxView extends JTextArea {
     	addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent me) {
         		String temp = getText();
-            	readEdits(str, temp, false); // read the edits if user clicks on the text
+            	readEdits(str, temp); // read the edits if user clicks on the text
                 str = getText();
         	}
         });
@@ -137,7 +137,7 @@ public class TextBoxView extends JTextArea {
     	controller.add(str, position, isAddition);
     }
     
-    public void readEdits(String prev, String temp, boolean isRemoval) {
+    public void readEdits(String prev, String temp) {
     	// case where there was an insert in the document (previous tbox is shorter than current tbox)
     	if (prev.length() < temp.length())
     	{
@@ -161,7 +161,7 @@ public class TextBoxView extends JTextArea {
     		}
     	}
     	// case where there was a removal in the document (previous tbox is longer than current tbox)
-    	else if ((prev.length() > temp.length()) && isRemoval)
+    	else if (prev.length() > temp.length())
     	{
     		int i = 0; // i is used to detect the position of the deletion
     		while (i < temp.length()) 
@@ -180,8 +180,18 @@ public class TextBoxView extends JTextArea {
     	}
     }
     
+    /**
+     * Call the undo method from the textboxcontroller
+     */
     public void undo() {
     	controller.undo();
+    }
+    
+    /**
+     * update the str to the text in the textarea
+     */
+    public void updateStr() {
+    	str = getText();
     }
     
     /**
@@ -190,11 +200,21 @@ public class TextBoxView extends JTextArea {
     public void displayOnConsole() {
     	controller.StringRepr();
     }
-
+    
+    
+    /**
+     * DeferredDocumentListener to detect x sec of inactivity. will reset the timer if a document is updated.
+     */
 	public class DeferredDocumentListener implements DocumentListener {
 
         private final Timer timer;
-
+        
+        /**
+         * 
+         * @param timeOut how long to create an actionlistener
+         * @param listener actionlistener
+         * @param repeats true if wants to be repeated.
+         */
         public DeferredDocumentListener(int timeOut, ActionListener listener, boolean repeats) {
             timer = new Timer(timeOut, listener);
             timer.setRepeats(repeats);
@@ -211,17 +231,27 @@ public class TextBoxView extends JTextArea {
         public void stop() {
             timer.stop();
         }
-
+        
+        /**
+         * if there is an insert in the document, restart timer
+         */
         @Override
         public void insertUpdate(DocumentEvent e) {
             timer.restart();
         }
 
+        /**
+         * if there is a removal in the document, restart timer
+         */
         @Override
         public void removeUpdate(DocumentEvent e) {
             timer.restart();
         }
-
+        
+        /**
+         * if there is an update in the document (moreso in the formatting), restart timer
+         * probably will not be used.
+         */
         @Override
         public void changedUpdate(DocumentEvent e) {
             timer.restart();
