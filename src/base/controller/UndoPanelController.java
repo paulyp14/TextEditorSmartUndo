@@ -31,7 +31,7 @@ public class UndoPanelController implements ControllerInterface
         groupContainer.add(groupName, newItemId);
         groupContainer.update();
 
-        // TODO use undopanelview
+        undoPanelView.getEditGroupViews().get(groupIndex).addNewEdit(text);
     }
 
     @Override

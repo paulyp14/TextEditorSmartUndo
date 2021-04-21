@@ -1,7 +1,5 @@
 package base.controller;
 
-import java.util.ArrayList;
-
 import base.model.*;
 import base.view.*;
 
@@ -15,17 +13,17 @@ public class TextBoxController implements ControllerInterface {
 	// also need to be connected to the undopanelview, to get the currently focused group.
 	private TextBoxView textBoxView;
     private GroupContainer groupContainer;
-    private UndoPanelView undoPanelView;
+    private UndoPanelController undoPanelController;
 
     /**
 	 * contructor
 	 * @param TextBoxView our textboxview view
 	 * @param UndoPanelView our undopanelview model
 	 */
-    public TextBoxController(TextBoxView tbv, UndoPanelView upv) {
+    public TextBoxController(TextBoxView tbv, UndoPanelController upc) {
     	textBoxView = tbv;
     	groupContainer = GroupContainer.getContainer();
-    	undoPanelView = upv;
+    	undoPanelController = upc;
     }
     
     /**
@@ -48,17 +46,19 @@ public class TextBoxController implements ControllerInterface {
 	 * @param booolean isAddition
 	 */
 	public void add(String text, int position, boolean isAddition) {
-		String groupName; // to store the currently focused group name as string
+		// String groupName; // to store the currently focused group name as string
 		
-		//create the edit in the editcontainer.
-		groupContainer.getEditContainer().create(text, position, isAddition);
-		int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId(); // store the current id of the newly created edit.
+		// //create the edit in the editcontainer.
+		// groupContainer.getEditContainer().create(text, position, isAddition);
+		// int newItemId = groupContainer.getEditContainer().mostRecentEdit().getId(); // store the current id of the newly created edit.
 		
 		// if the undopanel view is focused on a group, create an edit in that group
-		if (undoPanelView.getCurrentlyFocusedGroup() != -1)
+		int focusedGroupIndex = undoPanelController.getUndoPanelView().getCurrentlyFocusedGroup();
+		if (focusedGroupIndex != -1)
 		{
-			groupName = String.valueOf(undoPanelView.getCurrentlyFocusedGroup());
-			groupContainer.add(groupName, newItemId);
+			// groupName = String.valueOf(focusedGroupIndex);
+			// groupContainer.add(groupName, newItemId);
+			undoPanelController.addNewEdit(focusedGroupIndex, text, position, isAddition);
 		}
 		
 		groupContainer.update();
