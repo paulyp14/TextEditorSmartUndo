@@ -10,7 +10,7 @@ import base.view.*;
 public class TextBoxController implements ControllerInterface {
 	
 	// attributes, the TextBoxController is connected to the GroupContainer and the TextBoxView, 
-	// also need to be connected to the undopanelview, to get the currently focused group.
+	// also need to be connected to the undopanelcontroller, to get the currently focused group.
 	private TextBoxView textBoxView;
     private GroupContainer groupContainer;
     private UndoPanelController undoPanelController;
@@ -18,7 +18,7 @@ public class TextBoxController implements ControllerInterface {
     /**
 	 * contructor
 	 * @param TextBoxView our textboxview view
-	 * @param UndoPanelView our undopanelview model
+	 * @param UndoPanelComtroler our undopanelcontroller
 	 */
     public TextBoxController(TextBoxView tbv, UndoPanelController upc) {
     	textBoxView = tbv;
@@ -144,10 +144,11 @@ public class TextBoxController implements ControllerInterface {
 	public void updateView() {
 		String text = groupContainer.getEditContainer().asText();
 		textBoxView.setText(text);
+		textBoxView.updateStr(); // update the str attribute to the text in the textarea
 	}
 	
 	/**
-     * Displays the content of both the editcontainer and groupcontainer on the console.
+     * Displays the content of both the editcontainer and groupcontainer on the console. (for testing)
      */
 	public void StringRepr() {
 		System.out.println(groupContainer.stringRepr());
